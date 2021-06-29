@@ -7,5 +7,6 @@ target 'ProtoTypeApp' do
 
   # Pods for ProtoTypeApp
   pod 'RealmSwift'
-
+  pod 'FirebaseUI/Auth'
+  pod 'FirebaseUI/Google'
 end
