@@ -13,24 +13,6 @@ struct CalendarDayView: View {
     
     init(day:Date){
         self.day = day
-        
-        
-        
-        let f = DateFormatter()
-        f.timeStyle = .long
-        f.dateStyle = .long
-        f.locale = Locale(identifier: "ja_JP")
-        
-        
-        print("----------- self.day  -------------")
-        print(f.string(from: self.day))
-        print("----------- startTime  -------------")
-        print(f.string(from: lessonStartTime(d: self.day, index: 0)))
-        print(f.string(from: lessonStartTime(d: self.day, index: 1)))
-        print(f.string(from: lessonStartTime(d: self.day, index: 2)))
-        print(f.string(from: lessonStartTime(d: self.day, index: 3)))
-        print(f.string(from: lessonStartTime(d: self.day, index: 4)))
-        print("------------------------")
     }
     
     var body: some View {

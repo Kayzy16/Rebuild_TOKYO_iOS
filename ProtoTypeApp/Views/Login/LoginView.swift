@@ -123,7 +123,7 @@ struct LoginView: View {
         var login_staff_id = ""
         
         staff.forEach(){ stf in
-            if(stf.mail == self.mail && stf.password == self.password){
+            if(stf.mail.lowercased() == self.mail.lowercased() && stf.password == self.password){
                 login_staff_id = stf.id
             }
         }
@@ -136,7 +136,7 @@ struct LoginView: View {
         var login_customer_id = ""
         
         cus.forEach(){ cstmr in
-            if(cstmr.mail == self.mail && cstmr.password == self.password){
+            if(cstmr.mail.lowercased() == self.mail.lowercased() && cstmr.password == self.password){
                 login_customer_id = cstmr.id
             }
         }
