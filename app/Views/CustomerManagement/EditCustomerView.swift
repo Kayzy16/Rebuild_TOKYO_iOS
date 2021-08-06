@@ -378,42 +378,56 @@ struct EditCustomerView: View {
     
         let csRef = db.collection("30_CUSTOMER").document(with.id)
         let ticRef = db.collection("60_CUSTOMER_TICKET").document(with.id)
-
-        db.runTransaction({ (transaction, errorPointer) -> Any? in
-            transaction.updateData(["99_DELETE_FLG"  : 1],forDocument: csRef)
-            transaction.updateData(["99_DELETE_FLG"  : 1],forDocument: ticRef)
-                
-            db.collection("50_RESERVATION").whereField("20_CUSTOMER_ID", isEqualTo: with.id)
-                .getDocuments() { (querySnapshot, err) in
-                    if let err = err {
-                        print("Error getting documents: \(err)")
-                    } else {
+        
+        db.collection("50_RESERVATION").whereField("20_CUSTOMER_ID", isEqualTo: with.id)
+            .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                    gcp.dismiss()
+                    self.alertType = .failed
+                    self.deleteAlert.toggle()
+                } else {
+                    
+                    db.runTransaction({ (transaction, errorPointer) -> Any? in
+                        transaction.updateData(["99_DELETE_FLG"  : 1],forDocument: csRef)
+                        transaction.updateData(["99_DELETE_FLG"  : 1],forDocument: ticRef)
+                        
                         for document in querySnapshot!.documents {
                             transaction.updateData(["99_DELETE_FLG"  : 1],forDocument: document.reference)
                         }
-                    }
-            }
-            return nil
-        }) { (object, error) in
-            if let error = error {
-                print("Transaction failed: \(error)")
-                gcp.dismiss()
-                self.alertType = .failed
-                self.deleteAlert.toggle()
-            } else {
-                print("Transaction successfully committed!")
-                gcp.dismiss()
-                for i in 0..<firestoreData.customer.entities.count {
-                    if firestoreData.customer.entities[i].id == with.id{
-                        firestoreData.customer.entities[i].deleteFlg = 1
-                        firestoreData.customer.entities.remove(at: i)
+                        
+                        return nil
+                    }) { (object, error) in
+                        if let error = error {
+                            print("Transaction failed: \(error)")
+                            gcp.dismiss()
+                            self.alertType = .failed
+                            self.deleteAlert.toggle()
+                        } else {
+                            print("Transaction successfully committed!")
+                            gcp.dismiss()
+                            for i in 0..<firestoreData.customer.entities.count {
+                                if firestoreData.customer.entities[i].id == with.id{
+                                    firestoreData.customer.entities[i].deleteFlg = 1
+                                    firestoreData.customer.entities.remove(at: i)
+                                }
+                            }
+                            
+                            for j in 0..<firestoreData.reservation.entities.count {
+                                if firestoreData.reservation.entities[j].customerId == with.id{
+                                    firestoreData.reservation.entities[j].deleteFlg = 1
+                                }
+                            }
+                            
+                            self.alertType = .complete
+                            self.deleteAlert.toggle()
+                        }
                     }
                 }
-                
-                self.alertType = .complete
-                self.deleteAlert.toggle()
-            }
         }
+        
+
+        
     }
     
     private func getDataFromView() -> Customer{

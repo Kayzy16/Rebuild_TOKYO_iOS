@@ -208,9 +208,9 @@ struct EventFrameView: View {
     }
     
     private func getAlertByState() -> Alert {
-        if !firestoreData.ticket.isTicketLeft(){
-            return showNoTicketAlert()
-        }
+//        if !firestoreData.ticket.isTicketLeft(){
+//            return showNoTicketAlert()
+//        }
         switch self.spotState {
             case .disabled : return deleteReservationAleart()
             case .enabled  : return showReservationAleart()
@@ -248,28 +248,34 @@ struct EventFrameView: View {
     }
     
     private func showReservationAleart() -> Alert {
-        
-        let ticketBefore = firestoreData.ticket.getTicketNum()
-        let ticketAfter = ticketBefore - 1
-        let ticketMessage = String(ticketBefore) + " → " + String(ticketAfter)
-        let dateMessage = getFormatedDate(from: self.date)
-        let timeMessage = startTimeLabel + " - " + endTimeLabel
-        let instructorName = firestoreData.staff.getStaff(byStaffId: viewRouter.selectedStaffId)?.name ?? ""
-        
         switch alertType {
             case .confirm :
-                return Alert(
-                    title: Text("レッスンを予約しますか？"),
-                    message: Text(reserveMessageBuilder(date: dateMessage, time: timeMessage, instructor: instructorName, ticket:ticketMessage)),
-                    primaryButton: .cancel(Text("キャンセル")),
-                    secondaryButton:
-                        .default (
-                            Text("OK"),
-                            action: {
-                                checkSimutaneousReservation()
-                            }
+                
+                let ticketBefore = firestoreData.ticket.getTicketNum()
+                let ticketAfter = ticketBefore - 1
+                let ticketMessage = String(ticketBefore) + " → " + String(ticketAfter)
+                let dateMessage = getFormatedDate(from: self.date)
+                let timeMessage = startTimeLabel + " - " + endTimeLabel
+                let instructorName = firestoreData.staff.getStaff(byStaffId: viewRouter.selectedStaffId)?.name ?? ""
+                
+                if ticketBefore < 1{
+                    return showNoTicketAlert()
+                }
+                else{
+                    return Alert(
+                        title: Text("レッスンを予約しますか？"),
+                        message: Text(reserveMessageBuilder(date: dateMessage, time: timeMessage, instructor: instructorName, ticket:ticketMessage)),
+                        primaryButton: .cancel(Text("キャンセル")),
+                        secondaryButton:
+                            .default (
+                                Text("OK"),
+                                action: {
+                                    checkSimutaneousReservation()
+                                }
+                            )
                         )
-                    )
+                }
+                
             case .complete :
                 return Alert(
                     title: Text("レッスンを予約しました"),
