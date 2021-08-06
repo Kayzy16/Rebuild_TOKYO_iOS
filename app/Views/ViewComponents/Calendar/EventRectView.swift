@@ -194,7 +194,19 @@ struct EventRectView: View {
             case .disabled : return showErrorAlert()
             case .enabled  : return showDeleteShiftAlert()
             case .occupied : return showOccupiedAlert()
-            case .reserved : return showErrorAlert()
+            case .reserved :
+                if let shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq){
+                    if isReserved(shift: shift){
+                        return showErrorAlert()
+                    }
+                    else{
+                        return showDeleteShiftAlert()
+                        
+                    }
+                }
+                else{
+                    return showErrorAlert()
+                }
         }
     }
     

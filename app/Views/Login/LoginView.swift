@@ -111,6 +111,7 @@ struct LoginView: View {
         Auth.auth().signIn(withEmail: mail, password: password){(result,error) in
             if error != nil{
                 self.auth_error = true
+                print(error)
                 error_msg = "メールアドレス、またはパスワードが謝っています"
                 gcp.dismiss()
             }
