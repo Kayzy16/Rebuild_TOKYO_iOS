@@ -331,11 +331,11 @@ PODS:
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
   - PromisesObjC (1.2.12)
-  - Realm (10.10.0):
-    - Realm/Headers (= 10.10.0)
-  - Realm/Headers (10.10.0)
-  - RealmSwift (10.10.0):
-    - Realm (= 10.10.0)
+  - Realm (10.12.0):
+    - Realm/Headers (= 10.12.0)
+  - Realm/Headers (10.12.0)
+  - RealmSwift (10.12.0):
+    - Realm (= 10.12.0)
 
 DEPENDENCIES:
   - Firebase/DynamicLinks
@@ -404,9 +404,9 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
-  Realm: f501df41a4222c67850c77cf135d472192ecf294
-  RealmSwift: c69aadfc7db0d60075178d037c2f34ada73d5201
+  Realm: 32488213acb44660539c619d620cec1bac046166
+  RealmSwift: 0abdca6231d5ff8a4f84cef9c1121ef95a483faf
 
-PODFILE CHECKSUM: 296716b8fc5fe8332176f9da1c8c4162580cc182
+PODFILE CHECKSUM: d49eb1f00e93d786a5651909b20ada320d65fbc0
 
 COCOAPODS: 1.10.0

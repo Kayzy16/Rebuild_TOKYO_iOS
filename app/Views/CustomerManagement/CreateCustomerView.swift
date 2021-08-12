@@ -28,6 +28,7 @@ struct CreateCustomerView: View {
     @State private var password = ""
     @State private var selectedProgram : Program?
     @State private var initialTicket = ""
+    @State private var errorMsg = "通信環境をお確かめの上、時間を置いて再度実施してください"
     
     let db = Firestore.firestore()
     
@@ -104,6 +105,7 @@ struct CreateCustomerView: View {
                     Spacer()
                     TextField("",text:$initialTicket)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
                         .frame(width:CGFloat(160))
                         .disabled(isFinishing)
                         .font(.body)
@@ -118,12 +120,15 @@ struct CreateCustomerView: View {
                 trailing:
                     Button(
                         action: {
-                            self.isFinishing    = true
-                            
-//                            let stff = getDataFromView()
-//                            StaffDao.save(with: stff)
-//                            saveStaffDataToFirestore(with: stff)
-                            self.isAlertShowing = true
+                            if isInitialTicketValid(){
+                                self.isFinishing    = true
+                                self.isAlertShowing = true
+                            }
+                            else{
+                                errorMsg = "『予約回数(毎月)』が『予約可能数(初月)』より大きくなるよう入力してください"
+                                self.alertType = .failed
+                                self.isAlertShowing.toggle()
+                            }
                         },
                         label: {
                             if(!isFormValid()){
@@ -170,7 +175,7 @@ struct CreateCustomerView: View {
             case .failed:
                 return Alert(
                     title: Text("顧客の作成に失敗しました"),
-                    message: Text("通信環境をお確かめの上、時間を置いて再度実施してください"),
+                    message: Text(errorMsg),
                     dismissButton:.default(Text("OK"),action: {self.alertType = .confirm})
                 )
         }
@@ -184,6 +189,31 @@ struct CreateCustomerView: View {
         let now = Timestamp(date: Date())
         
         Auth.auth().createUser(withEmail: with.mail, password: with.password) { authResult, error in
+            
+            if nil != error {
+                
+                if let errCode = AuthErrorCode(rawValue: error!._code){
+                    switch errCode {
+                        case .invalidEmail:
+                            errorMsg = "メールアドレスの形式が正しくありません"
+                        case .emailAlreadyInUse:
+                            errorMsg = "登録済みのメールアドレスです"
+                        case .weakPassword:
+                            errorMsg = "パスワードは6文字以上で入力してください"
+                        default:
+                            errorMsg = "通信環境をお確かめの上、時間を置いて再度実施してください"
+                    }
+                }
+                else{
+                    errorMsg = "想定外のエラーが発生しました。管理者に連絡してください"
+                    
+                }
+                gcp.dismiss()
+                self.alertType = .failed
+                self.isAlertShowing.toggle()
+                self.isFinishing.toggle()
+                return
+            }
 
             if let authResult = authResult {
                 
@@ -229,8 +259,10 @@ struct CreateCustomerView: View {
             }
             else{
                 gcp.dismiss()
+                errorMsg = "想定外のエラーが発生しました。管理者に連絡してください"
                 self.alertType = .failed
                 self.isAlertShowing.toggle()
+                self.isFinishing.toggle()
             }
         }
     }
@@ -249,6 +281,17 @@ struct CreateCustomerView: View {
         }
         else{
             return false
+        }
+    }
+    
+    private func isInitialTicketValid() -> Bool{
+        let usualTicket = selectedProgram?.num ?? 0
+        let initialTicket = Int(self.initialTicket) ?? 0
+        if usualTicket < initialTicket {
+            return false
+        }
+        else{
+            return true
         }
     }
 }

@@ -45,18 +45,20 @@ struct EventFrameView: View {
         
         if viewRouter.loginUserType == .customer { // ユーザ
             ZStack(alignment:.center){
+                
                 Rectangle()
-                .foregroundColor(getSpotColorByState())
-                .onTapGesture {
-                    if spotState != .disabled {
-                        reservationAlert.toggle()
+                    .strokeBorder(getStrokeColor(),lineWidth: event_frame_stroke)
+                    .foregroundColor(getSpotColorByState())
+                    .background(getSpotColorByState())
+                    .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height))
+                    .onTapGesture {
+                        if spotState != .disabled {
+                            reservationAlert.toggle()
+                        }
                     }
-                }
-                .background(getSpotColorByState())
-                .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height))
-                .alert(isPresented:$reservationAlert){
-                    getAlertByState()
-                }
+                    .alert(isPresented:$reservationAlert){
+                        getAlertByState()
+                    }
                 
                 VStack{
                     Spacer()
@@ -207,6 +209,14 @@ struct EventFrameView: View {
         }
     }
     
+    private func getStrokeColor() -> Color {
+        switch getSpotState() {
+            case .disabled : return ColorManager.darkGray
+            case .enabled  : return ColorManager.secondaryOrange
+            case .reserved : return ColorManager.secondaryOrange
+            case .conflicted : return ColorManager.darkGray
+        }
+    }
     private func getAlertByState() -> Alert {
 //        if !firestoreData.ticket.isTicketLeft(){
 //            return showNoTicketAlert()
@@ -263,7 +273,7 @@ struct EventFrameView: View {
                 }
                 else{
                     return Alert(
-                        title: Text("レッスンを予約しますか？"),
+                        title: Text("トレーニングを予約しますか？"),
                         message: Text(reserveMessageBuilder(date: dateMessage, time: timeMessage, instructor: instructorName, ticket:ticketMessage)),
                         primaryButton: .cancel(Text("キャンセル")),
                         secondaryButton:
@@ -278,7 +288,7 @@ struct EventFrameView: View {
                 
             case .complete :
                 return Alert(
-                    title: Text("レッスンを予約しました"),
+                    title: Text("トレーニングを予約しました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
@@ -298,7 +308,7 @@ struct EventFrameView: View {
         switch alertType {
             case .confirm :
                 return Alert(
-                    title: Text("レッスンを取消しますか？"),
+                    title: Text("予約を取消しますか？"),
                     message: nil,
                     primaryButton: .cancel(Text("キャンセル")),
                     secondaryButton:
@@ -311,7 +321,7 @@ struct EventFrameView: View {
                     )
             case .complete :
                 return Alert(
-                    title: Text("レッスンを取消しました"),
+                    title: Text("予約を取消しました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
@@ -320,7 +330,7 @@ struct EventFrameView: View {
                 )
         case .failed :
             return Alert(
-                title: Text("レッスンの取消に失敗しました"),
+                title: Text("予約の取消に失敗しました"),
                 message: Text("通信環境をお確かめの上、時間を置いて再度実施してください"),
                 dismissButton:.default(Text("OK"),action: {self.alertType = .confirm})
             )
@@ -328,8 +338,8 @@ struct EventFrameView: View {
     }
     private func showConflictedAleart() -> Alert {
         return Alert(
-            title: Text("レッスンの予約に失敗しました"),
-            message: Text("このレッスンは他のお客様に予約されました"),
+            title: Text("トレーニングの予約に失敗しました"),
+            message: Text("このトレーニングは他のお客様に予約されました"),
             dismissButton:.default(Text("OK"),action: {self.alertType = .confirm})
         )
     }

@@ -135,8 +135,8 @@ struct LoginView: View {
             let data = doc.data()
             business_start = data?["10_BUSINESS_START_TIME"] as? Int ?? 10
             business_end = data?["11_BUSINESS_END_TIME"] as? Int ?? 22
-            lesson_length = data?["20_LESSON_LENGTH"] as? Int ?? 90
-            lesson_rest_length = data?["21_LESSON_REST_LENGTH"] as? Int ?? 30
+            lesson_length = data?["20_LESSON_LENGTH"] as? Int ?? 60
+            lesson_rest_length = data?["21_LESSON_REST_LENGTH"] as? Int ?? 0
             default_ticket_Num = data?["30_DEFAULT_TICKET_NUM"] as? Int ?? 30
             
             updateUI()

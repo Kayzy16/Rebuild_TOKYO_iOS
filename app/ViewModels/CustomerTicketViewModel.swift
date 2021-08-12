@@ -60,11 +60,10 @@ class CustomerTicketViewModel:ObservableObject {
                             if let prgrmDocument = doc,prgrmDocument.exists {
                                 let prgrmData = prgrmDocument.data()
                                 let initialTicketNum = prgrmData?["20_NUM"] as? Int ?? 0
-                                
-                                
-                                
+                                let now = Timestamp(date:Date())
                                 self.db.collection("60_CUSTOMER_TICKET").document(user.uid).updateData([
-                                    "10_NUM_LEFT" : initialTicketNum
+                                    "10_NUM_LEFT" : initialTicketNum,
+                                    "80_UPDATE_DATE" : now
                                 ]) { err in
                                     if let err = err {
                                         print("Error initializing document: \(err)")

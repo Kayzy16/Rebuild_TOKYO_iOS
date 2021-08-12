@@ -23,6 +23,7 @@ class ProgramsViewModel : ObservableObject {
         DispatchQueue.global().async {
             
             self.db.collection("70_PROGRAMS")
+                .order(by: "10_NAME")
 //                .whereField("30_START_TIME", isGreaterThanOrEqualTo: Timestamp(date: getJSTDate(fromUTC: Date())))
                 .addSnapshotListener{ (QuerySnapshot, error) in
                 guard let documents = QuerySnapshot?.documents else {

@@ -23,30 +23,30 @@ struct SideMenuView: View {
     var body: some View {
         VStack(alignment: .leading) {
             AppIconView()
-            HStack{
-                Text("FAQ")
-                Spacer()
-            }
-            .padding(.top)
-            .padding(.leading)
-            .frame(maxWidth:.infinity)
-            .contentShape(Rectangle())
-            .onTapGesture {
-//                openURL(URL(string:"https://arcane-3b5c3.web.app/terms-of-condition")!)
-                viewRouter.sideMenuState = .isHidden
-            }
-            HStack{
-                Text("About us")
-                Spacer()
-            }
-            .padding(.top)
-            .padding(.leading)
-            .frame(maxWidth:.infinity)
-            .contentShape(Rectangle())
-            .onTapGesture {
-//                openURL(URL(string:"https://arcane-3b5c3.web.app/terms-of-condition")!)
-                viewRouter.sideMenuState = .isHidden
-            }
+//            HStack{
+//                Text("FAQ")
+//                Spacer()
+//            }
+//            .padding(.top)
+//            .padding(.leading)
+//            .frame(maxWidth:.infinity)
+//            .contentShape(Rectangle())
+//            .onTapGesture {
+//                openURL(URL(string:"https://rebuild.games/faq")!)
+//                viewRouter.sideMenuState = .isHidden
+//            }
+//            HStack{
+//                Text("About us")
+//                Spacer()
+//            }
+//            .padding(.top)
+//            .padding(.leading)
+//            .frame(maxWidth:.infinity)
+//            .contentShape(Rectangle())
+//            .onTapGesture {
+////                openURL(URL(string:"https://arcane-3b5c3.web.app/terms-of-condition")!)
+//                viewRouter.sideMenuState = .isHidden
+//            }
 //            Divider()
             // 利用規約
             HStack{
@@ -143,14 +143,14 @@ struct SideMenuView: View {
                 Divider()
                 
                 HStack{
-                    Spacer()
-                    Image("icon_twitter")
-                        .resizable()
-                        .frame(width: 24, height: 24)
-                    Spacer()
-                    Image("icon_facebook")
-                        .resizable()
-                        .frame(width: 24, height: 24)
+//                    Spacer()
+//                    Image("icon_twitter")
+//                        .resizable()
+//                        .frame(width: 24, height: 24)
+//                    Spacer()
+//                    Image("icon_facebook")
+//                        .resizable()
+//                        .frame(width: 24, height: 24)
                     Spacer()
                     Image("icon_instagram")
                         .resizable()

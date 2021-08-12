@@ -63,13 +63,14 @@
 		87B13B9B2678DDA80031A94E /* StaffPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B13B9A2678DDA80031A94E /* StaffPickerView.swift */; };
 		87B13B9D267A0CE40031A94E /* CustomerTicket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B13B9C267A0CE20031A94E /* CustomerTicket.swift */; };
 		87B1899F267CDC9F00A88434 /* CustomerTicketDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87B1899E267CDC9F00A88434 /* CustomerTicketDao.swift */; };
-		BBCA9EFADA4D8FD21A08710D /* Pods_ProtoTypeApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6855D722FAC11B85CFDFE493 /* Pods_ProtoTypeApp.framework */; };
+		C00DBE1480060ABDE53693AD /* Pods_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 568A9ACB67623690D6673513 /* Pods_app.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		092D9E3E2EE289FB38CD9B80 /* Pods-ProtoTypeApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProtoTypeApp.debug.xcconfig"; path = "Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp.debug.xcconfig"; sourceTree = "<group>"; };
 		394C5B9F1BF7514DABDF03E7 /* Pods-ProtoTypeApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ProtoTypeApp.release.xcconfig"; path = "Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp.release.xcconfig"; sourceTree = "<group>"; };
-		6855D722FAC11B85CFDFE493 /* Pods_ProtoTypeApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProtoTypeApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		568A9ACB67623690D6673513 /* Pods_app.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_app.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		704F0A2C30CCB9695168CA04 /* Pods-app.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app.debug.xcconfig"; path = "Target Support Files/Pods-app/Pods-app.debug.xcconfig"; sourceTree = "<group>"; };
 		8750C7C526A3D4F700C66D50 /* CustomerTicketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerTicketViewModel.swift; sourceTree = "<group>"; };
 		8750C7C726A4507F00C66D50 /* CustomerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerViewModel.swift; sourceTree = "<group>"; };
 		876DCC55267B44B6008E2B0C /* WeekRangeControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekRangeControllerView.swift; sourceTree = "<group>"; };
@@ -130,6 +131,7 @@
 		87B13B9A2678DDA80031A94E /* StaffPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffPickerView.swift; sourceTree = "<group>"; };
 		87B13B9C267A0CE20031A94E /* CustomerTicket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerTicket.swift; sourceTree = "<group>"; };
 		87B1899E267CDC9F00A88434 /* CustomerTicketDao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerTicketDao.swift; sourceTree = "<group>"; };
+		FA4D454890D6FC088942CF6B /* Pods-app.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app.release.xcconfig"; path = "Target Support Files/Pods-app/Pods-app.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,7 +139,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCA9EFADA4D8FD21A08710D /* Pods_ProtoTypeApp.framework in Frameworks */,
+				C00DBE1480060ABDE53693AD /* Pods_app.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +249,7 @@
 			children = (
 				879E9FDB266FBAF90036E89C /* RealmSwift.xcframework */,
 				879E9FD7266FBAF20036E89C /* Realm.xcframework */,
-				6855D722FAC11B85CFDFE493 /* Pods_ProtoTypeApp.framework */,
+				568A9ACB67623690D6673513 /* Pods_app.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -361,6 +363,8 @@
 			children = (
 				092D9E3E2EE289FB38CD9B80 /* Pods-ProtoTypeApp.debug.xcconfig */,
 				394C5B9F1BF7514DABDF03E7 /* Pods-ProtoTypeApp.release.xcconfig */,
+				704F0A2C30CCB9695168CA04 /* Pods-app.debug.xcconfig */,
+				FA4D454890D6FC088942CF6B /* Pods-app.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -384,8 +388,6 @@
 			dependencies = (
 			);
 			name = app;
-			packageProductDependencies = (
-			);
 			productName = ProtoTypeApp;
 			productReference = 879E9FC4266FB9170036E89C /* app.app */;
 			productType = "com.apple.product-type.application";
@@ -416,8 +418,6 @@
 				Base,
 			);
 			mainGroup = 879E9FBB266FB9170036E89C;
-			packageReferences = (
-			);
 			productRefGroup = 879E9FC5266FB9170036E89C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -448,15 +448,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		3ACF6ADDFB61BB0D6ED12193 /* [CP] Check Pods Manifest.lock */ = {
@@ -474,7 +474,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ProtoTypeApp-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-app-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -487,15 +487,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ProtoTypeApp/Pods-ProtoTypeApp-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-app/Pods-app-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -681,7 +681,7 @@
 		};
 		879E9FD4266FB91D0036E89C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 092D9E3E2EE289FB38CD9B80 /* Pods-ProtoTypeApp.debug.xcconfig */;
+			baseConfigurationReference = 704F0A2C30CCB9695168CA04 /* Pods-app.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -704,7 +704,7 @@
 		};
 		879E9FD5266FB91D0036E89C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 394C5B9F1BF7514DABDF03E7 /* Pods-ProtoTypeApp.release.xcconfig */;
+			baseConfigurationReference = FA4D454890D6FC088942CF6B /* Pods-app.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

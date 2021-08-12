@@ -20,6 +20,8 @@ struct CreateStaffView: View {
     // 入力のキャンセル・完了時のコンポーネント制御用フラグ
     @State var isFinishing = false
     
+    @State private var errorMsg = "通信環境をお確かめの上、時間を置いて再度実施してください"
+    
     // 入力のキャンセル・完了時に一覧画面に戻るための変数
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var firestoreData : FirestoreDataRepository
@@ -139,10 +141,9 @@ struct CreateStaffView: View {
             case .failed:
                 return Alert(
                     title: Text("スタッフの作成に失敗しました"),
-                    message: Text("通信環境をお確かめの上、時間を置いて再度実施してください"),
+                    message: Text(errorMsg),
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-                        self.presentationMode.wrappedValue.dismiss()
                     })
                 )
         }
@@ -155,6 +156,29 @@ struct CreateStaffView: View {
         db.settings = settings
         
         Auth.auth().createUser(withEmail: with.mail, password: with.password) { authResult, error in
+            
+            if nil != error {
+                if let errCode = AuthErrorCode(rawValue: error!._code){
+                    switch errCode {
+                        case .invalidEmail:
+                            errorMsg = "メールアドレスの形式が正しくありません"
+                        case .emailAlreadyInUse:
+                            errorMsg = "登録済みのメールアドレスです"
+                        case .weakPassword:
+                            errorMsg = "パスワードは6文字以上で入力してください"
+                        default:
+                            errorMsg = "通信環境をお確かめの上、時間を置いて再度実施してください"
+                    }
+                }
+                else{
+                    errorMsg = "想定外のエラーが発生しました。管理者に連絡してください"
+                }
+                gcp.dismiss()
+                self.alertType = .failed
+                self.isAlertShowing.toggle()
+                self.isFinishing.toggle()
+                return
+            }
             
             if let authResult = authResult {
                 let staffId = authResult.user.uid
