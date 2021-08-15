@@ -47,7 +47,7 @@ struct EventFrameView: View {
             ZStack(alignment:.center){
                 
                 Rectangle()
-                    .strokeBorder(getStrokeColor(),lineWidth: event_frame_stroke)
+//                    .strokeBorder(getStrokeColor(),lineWidth: event_frame_stroke)
                     .foregroundColor(getSpotColorByState())
                     .background(getSpotColorByState())
                     .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height))
@@ -55,6 +55,9 @@ struct EventFrameView: View {
                         if spotState != .disabled {
                             reservationAlert.toggle()
                         }
+                        
+                        print(self.spotState)
+                        
                     }
                     .alert(isPresented:$reservationAlert){
                         getAlertByState()
@@ -95,6 +98,7 @@ struct EventFrameView: View {
                 .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height))
                 
                 
+                
                 VStack {
                     HStack{
                         Spacer()
@@ -114,6 +118,47 @@ struct EventFrameView: View {
                             .environmentObject(firestoreData)
                         Spacer()
                     }
+
+                    // シフト枠1のキャプション
+//                    HStack{
+//                        Text(startTimeLabel)
+//                            .font(.caption2)
+//                        Text("-")
+//                            .font(.caption2)
+//                        Text(endTimeLabel)
+//                            .font(.caption2)
+//                    }
+////                    .frame(height:CGFloat(event_frame_height*0.1))
+//
+//                    // シフト枠1
+//                    EventRectView(date: self.date, startTime: self.startTime, seq: 0)
+//                    .environmentObject(firestoreData)
+//                    Spacer()
+//
+//
+//                    // シフト枠2のキャプション
+//                    HStack{
+//                        Spacer()
+//                        Text(startTimeLabel)
+//                            .font(.caption2)
+//                        Text("-")
+//                            .font(.caption2)
+//                            .padding(.top)
+//                            .padding(.bottom)
+//                        Text(endTimeLabel)
+//                            .font(.caption2)
+//                        Spacer()
+//                    }
+//                    .frame(height:CGFloat(event_frame_height*0.1))
+//
+//                    EventRectView(date: self.date, startTime: self.startTime, seq: 1)
+//                    .environmentObject(firestoreData)
+//                    Spacer()
+//                    ForEach(0..<max_reservable_spot){ i in
+//                        EventRectView(date: self.date, startTime: self.startTime, seq: i)
+//                            .environmentObject(firestoreData)
+//                        Spacer()
+//                    }
                 }
                 .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height))
             }

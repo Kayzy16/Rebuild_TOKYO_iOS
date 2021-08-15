@@ -32,7 +32,7 @@ struct EventRectView: View {
         case failed
     }
     
-    @State private var spotState : SpotState = .disabled
+    @State private var spotState : SpotState = .initial
     enum SpotState {
         case initial
         case disabled
@@ -99,38 +99,44 @@ struct EventRectView: View {
             if nil != self.shift {
             self.reservation = firestoreData.reservation.get(byShiftId: self.shift!.id)
             }
-            self.spotState = .initial
+//            self.spotState = .initial
             self.spotState = getSpotState()
         }
     }
     
     private func getSpotState() -> SpotState {
-//        print(self.date)
         if isLessonPassed(startTime: self.startTime){
             return .disabled
         }
         
         // シフトと予約を取得
-//        let shift = StaffShiftDao.get(date: date, startTime: startTime, seq: seq)
         let shiftfromFirestore = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
-//        print(shiftfromFirestore ?? "no shift found")
+
         
-        if nil != shiftfromFirestore { // シフト提出ずみ
+        // シフトデータあり
+        if nil != shiftfromFirestore {
+            
+            // 顧客による予約データあり
             if isReserved(shift: shiftfromFirestore!){
                 return .reserved
             }
             
+            // 自分のシフト
             if isMyShift(shift: shiftfromFirestore!){
                 return .enabled
             }
+            // 他人のシフト
             else {
                 return .occupied
             }
         }
+        // シフトデータなし
         else {
+            // 同時間帯の他スポットでシフト提出ずみ
             if isBookedAnotherSpot(){
                 return .disabled
             }
+            // シフト未提出
             else {
                 return .initial
             }
@@ -189,7 +195,7 @@ struct EventRectView: View {
     }
     
     private func getAlertByState() -> Alert{
-        switch self.spotState {
+        switch getSpotState() {
             case .initial  : return showCreateShiftAlert()
             case .disabled : return showErrorAlert()
             case .enabled  : return showDeleteShiftAlert()
@@ -270,14 +276,14 @@ struct EventRectView: View {
             if let error = error {
                 gcp.dismiss()
                 print("Error writing staff shift : \(error)")
-                self.spotState = .initial
+//                self.spotState = .initial
                 self.alertType = .failed
                 self.reservationAlert.toggle()
             }
             else{
                 gcp.dismiss()
                 firestoreData.staffShift.entities.append(newData);
-                self.spotState = .initial
+//                self.spotState = .initial
                 self.alertType = .complete
                 self.reservationAlert.toggle()
             }
@@ -315,22 +321,22 @@ struct EventRectView: View {
             if let error = error {
                 gcp.dismiss()
                 print("Error writing staff shift : \(error)")
-                self.spotState = .enabled
+//                self.spotState = .enabled
                 self.alertType = .failed
                 self.reservationAlert.toggle()
             }
             else{
-                gcp.dismiss()
-                self.spotState = .enabled
-                self.alertType = .complete
-                self.reservationAlert.toggle()
                 
+//                self.spotState = .enabled
                 for i in 0..<firestoreData.staffShift.entities.count{
                     if with.id == firestoreData.staffShift.entities[i].id{
                         firestoreData.staffShift.entities.remove(at: i)
                         break
                     }
                 }
+                gcp.dismiss()
+                self.alertType = .complete
+                self.reservationAlert.toggle()
             }
         }
     }
@@ -375,11 +381,11 @@ struct EventRectView: View {
                     )
             case .complete :
                 return Alert(
-                    title: Text("シフトを提出しました"),
+                    title: Text("シフトを取り下げました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-                        spotState = .enabled
+//                        spotState = .initial
                     })
                 )
         case .failed :
@@ -390,6 +396,7 @@ struct EventRectView: View {
             )
         }
     }
+    
     private func showDeleteShiftAlert() -> Alert {
         switch alertType {
             case .confirm :
@@ -409,11 +416,11 @@ struct EventRectView: View {
                     )
             case .complete :
                 return Alert(
-                    title: Text("シフトを取り下げました"),
+                    title: Text("シフトを提出しました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-                        spotState = .initial
+//                        spotState = .enabled
                     })
                 )
         case .failed :

@@ -17,13 +17,25 @@ struct CalendarDayView: View {
     }
     
     var body: some View {
-        VStack() {
-            ForEach(0..<maxLessonNum()) { i in
-                EventFrameView(date: day, startTime: lessonStartTime(d: day, index: i),startTimeLabel: lessonStartTime(index: i), endTimeLabel:lessonEndTime(index: i))
-                    .padding(.bottom)
-                    .environmentObject(firestoreData)
+        HStack {
+            VStack() {
+                ForEach(0..<maxLessonNum()) { i in
+                    EventFrameView(date: day, startTime: lessonStartTime(d: day, index: i),startTimeLabel: lessonStartTime(index: i), endTimeLabel:lessonEndTime(index: i))
+                        .padding(.bottom)
+                        .environmentObject(firestoreData)
+                }
             }
+            
+//            VStack() {
+//                ForEach(0..<maxLessonNum()) { i in
+//                    EventFrameView(date: day, startTime: lessonStartTime(d: day, index: i),startTimeLabel: lessonStartTime(index: i), endTimeLabel:lessonEndTime(index: i))
+//                        .padding(.bottom)
+//                        .environmentObject(firestoreData)
+//                }
+//            }
         }
+        
+        
     }
 }
 
