@@ -98,10 +98,10 @@ struct EventRectView: View {
         .background(getSpotColorByState())
         .shadow(color: .gray, radius: 3, x: 2, y: 2)
         .onTapGesture {
+            print(getSpotState())
             if getSpotState() == .initial || getSpotState() == .enabled || getSpotState() == .occupied{
                 reservationAlert.toggle()
             }
-            print(getSpotState())
         }
         .alert(isPresented:$reservationAlert){
             getAlertByState()
@@ -120,10 +120,8 @@ struct EventRectView: View {
     private func getCustomerName() -> String {
         if getSpotState() == .reserved{
             let shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
-            print(shift)
             if nil != shift {
                 let reservation = firestoreData.reservation.get(byShiftId: shift!.id)
-                print(reservation)
                 let name = firestoreData.customer.getName(byCustomerId: reservation!.customerId) ?? ""
                 return name
             }
@@ -148,7 +146,6 @@ struct EventRectView: View {
         
         // シフトデータあり
         if nil != shiftfromFirestore {
-            
             // 顧客による予約データあり
             if isReserved(shift: shiftfromFirestore!){
                 return .reserved
@@ -328,73 +325,6 @@ struct EventRectView: View {
         db.settings = settings
         let docRef = db.collection("40_STAFF_SHIFT").document(with.id)
         
-//        db.runTransaction({ (transaction, errorPointer) -> Any? in
-//
-//            db.collection("40_STAFF_SHIFT")
-//            .whereField("40_START_Time",isEqualTo: Timestamp(date: with.startTime))
-//                .addSnapshotListener{(QuerySnapshot, error) in
-//                    let documents = QuerySnapshot?.documents
-//                    if 0 != documents?.count  {
-//                        // バッチ書き込み
-//                        transaction.setData([
-//                            "10_STAFF_ID"   : with.staffId,
-//                            "20_START_DATE" : Timestamp(date:with.startDate),
-//                            "30_END_DATE"   : Timestamp(date:with.endDate),
-//                            "40_START_TIME" : Timestamp(date:with.startTime),
-//                            "50_SEQ"        : with.seq,
-//                            "70_CREATE_DATE": Timestamp(date:with.createDate),
-//                            "80_UPDATE_DATE": Timestamp(date:with.updateDate),
-//                            "99_DELETE_FLG" : with.deleteFlg
-//                        ], forDocument: docRef)
-//
-//                        return
-//                    }
-//                    else{
-//                        print(documents?.description)
-//                        // コンフリクトエラー
-//                        let error = NSError(
-//                                    domain: "AppErrorDomain",
-//                                    code: -1,
-//                                    userInfo: [
-//                                        NSLocalizedDescriptionKey: "Unable to assign shift due to confliction"
-//                                    ]
-//                                )
-//                        errorPointer?.pointee = error
-//                    }
-//
-//            }
-//            return nil
-//        }) { (object, error) in
-//            if let error = error {
-//                print("Transaction failed: \(error)")
-//                gcp.dismiss()
-////                print("Error writing staff shift : \(error)")
-////                self.spotState = .initial
-//                self.alertType = .confirm
-//                self.reservationAlert.toggle()
-//
-//            } else {
-//                gcp.dismiss()
-//                let newData = StaffShift()
-//                newData.staffId    = with.staffId
-//                newData.startDate  = with.startDate
-//                newData.endDate    = with.endDate
-//                newData.startTime  = with.startTime
-//                newData.seq        = with.seq
-//                newData.createDate = with.createDate
-//                newData.updateDate = with.updateDate
-//                newData.deleteFlg  = with.deleteFlg
-//                print("Transaction successfully committed!")
-//                gcp.dismiss()
-//                firestoreData.staffShift.entities.append(newData);
-////                self.spotState = .initial
-//                self.alertType = .complete
-//                self.reservationAlert.toggle()
-//            }
-//        }
-        
-        
-
         docRef.setData([
             "10_STAFF_ID"   : with.staffId,
             "20_START_DATE" : Timestamp(date:with.startDate),
@@ -423,6 +353,7 @@ struct EventRectView: View {
                 newData.createDate = with.createDate
                 newData.updateDate = with.updateDate
                 newData.deleteFlg  = with.deleteFlg
+                
                 firestoreData.staffShift.entities.append(newData);
 //                self.spotState = .initial
                 self.alertType = .complete
@@ -455,19 +386,15 @@ struct EventRectView: View {
             "40_START_TIME" : Timestamp(date:with.startTime),
             "50_SEQ"        : with.seq,
             "70_CREATE_DATE": Timestamp(date:with.createDate),
-            "80_UPDATE_DATE": Timestamp(date:with.updateDate),
+            "80_UPDATE_DATE": Timestamp(date:Date()),
             "99_DELETE_FLG" : 1
         ],merge: true){ error in
             if let error = error {
                 gcp.dismiss()
-//                print("Error writing staff shift : \(error)")
-//                self.spotState = .enabled
                 self.alertType = .failed
                 self.reservationAlert.toggle()
             }
             else{
-                
-//                self.spotState = .enabled
                 for i in 0..<firestoreData.staffShift.entities.count{
                     if with.id == firestoreData.staffShift.entities[i].id{
                         firestoreData.staffShift.entities[i].deleteFlg = 1
@@ -497,15 +424,14 @@ struct EventRectView: View {
             checkSimutaneousAssign(with: self.shift!)
         }
         else {
-            let newShift = StaffShift()
-            newShift.staffId = viewRouter.loginStaffId
-            newShift.startDate = date
-            newShift.endDate = date
-            newShift.startTime = startTime
-            newShift.seq = seq
+            self.shift!.staffId = viewRouter.loginStaffId
+            self.shift!.startDate = date
+            self.shift!.endDate = date
+            self.shift!.startTime = startTime
+            self.shift!.seq = seq
 //            StaffShiftDao.update(on: self.shift!, by: newShift)
 //            saveData(with: newShift)
-            checkSimutaneousAssign(with: newShift)
+            checkSimutaneousAssign(with: self.shift!)
         }
     }
     
@@ -557,8 +483,14 @@ struct EventRectView: View {
                                     delete(with: self.shift!)
                                 }
                                 else{
-                                    self.alertType = .complete
-                                    self.reservationAlert.toggle()
+                                    self.shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
+                                    if(nil != self.shift){
+                                        delete(with: self.shift!)
+                                    }
+                                    else{
+                                        self.alertType = .failed
+                                        self.reservationAlert.toggle()
+                                    }
                                 }
                             }
                         )
@@ -569,7 +501,6 @@ struct EventRectView: View {
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-//                        spotState = .enabled
                     })
                 )
         case .failed :

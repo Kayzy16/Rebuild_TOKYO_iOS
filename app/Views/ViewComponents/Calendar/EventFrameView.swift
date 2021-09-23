@@ -287,7 +287,7 @@ struct EventFrameView: View {
         if isLessonPassed(startTime: getStartTime()){
             return .disabled
         }
-        print(self.date)
+
         let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: getStartTime())
 //        if nil == shift {
 //            shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30))

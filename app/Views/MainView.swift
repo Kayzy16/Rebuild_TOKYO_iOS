@@ -27,8 +27,8 @@ struct MainView: View {
                                 Text("Reserve your lesson")
                                     .foregroundColor(.white)
                                 
-                                if(connected_environment == "STG"){
-                                    Text("STG")
+                                if(connected_environment != "PROD"){
+                                    Text(connected_environment)
                                         .foregroundColor(.white)
                                 }
                             }
