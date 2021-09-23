@@ -139,6 +139,7 @@ struct LoginView: View {
             lesson_length = data?["20_LESSON_LENGTH"] as? Int ?? 60
             lesson_rest_length = data?["21_LESSON_REST_LENGTH"] as? Int ?? 0
             default_ticket_Num = data?["30_DEFAULT_TICKET_NUM"] as? Int ?? 30
+            connected_environment = data?["40_ENVIRONMENT"] as? String ?? ""
             
             updateUI()
             

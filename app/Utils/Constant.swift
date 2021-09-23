@@ -28,6 +28,7 @@ public var day_rect_width        : CGFloat = 100
 public var day_rect_height       : CGFloat = 40
 
 public var time_axis_width       : CGFloat = 40
+public var connected_environment : String = ""
 
 
 

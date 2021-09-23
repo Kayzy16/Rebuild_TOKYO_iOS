@@ -26,6 +26,11 @@ struct MainView: View {
                             VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/){
                                 Text("Reserve your lesson")
                                     .foregroundColor(.white)
+                                
+                                if(connected_environment == "STG"){
+                                    Text("STG")
+                                        .foregroundColor(.white)
+                                }
                             }
                         }
                         .padding(.top)
