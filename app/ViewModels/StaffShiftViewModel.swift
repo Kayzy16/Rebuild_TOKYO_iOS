@@ -41,17 +41,7 @@ class StaffShiftViewModel : ObservableObject {
                     staffShift.createDate   = (data["70_CREATE_DATE"] as? Timestamp)!.dateValue()
                     staffShift.updateDate   = (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue()
                     
-                    
-//                    staffShift.startDate    = getJSTDate(fromUTC: (data["20_START_DATE"] as? Timestamp)!.dateValue())
-//                    staffShift.endDate      = getJSTDate(fromUTC: (data["30_END_DATE"] as? Timestamp)!.dateValue())
-//                    staffShift.startTime    = getJSTDate(fromUTC: (data["40_START_TIME"] as? Timestamp)!.dateValue())
-//                    staffShift.seq          = data["50_SEQ"] as? Int ?? 0
-//                    staffShift.createDate   = getJSTDate(fromUTC: (data["70_CREATE_DATE"] as? Timestamp)!.dateValue())
-//                    staffShift.updateDate   = getJSTDate(fromUTC: (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue())
                     staffShift.deleteFlg    = data["99_DELETE_FLG"] as? Int ?? 0
-                    
-//                    print("staff shift data : \(staffShift)")
-                    
                     return staffShift
                 }
             }
