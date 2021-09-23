@@ -27,7 +27,7 @@ class ProgramsViewModel : ObservableObject {
 //                .whereField("30_START_TIME", isGreaterThanOrEqualTo: Timestamp(date: getJSTDate(fromUTC: Date())))
                 .addSnapshotListener{ (QuerySnapshot, error) in
                 guard let documents = QuerySnapshot?.documents else {
-                    print("cannot get program data from firestore")
+//                    print("cannot get program data from firestore")
                     return
                 }
                 
@@ -41,7 +41,7 @@ class ProgramsViewModel : ObservableObject {
                     prgrm.updateDate = (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue()
                     prgrm.deleteFlg  = data["99_DELETE_FLG"] as? Int ?? 0
                     
-                    print("program data : \(data)")
+//                    print("program data : \(data)")
                     
                     return prgrm
                 }

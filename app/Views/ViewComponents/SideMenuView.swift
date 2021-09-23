@@ -10,6 +10,7 @@ import SwiftUI
 struct SideMenuView: View {
     
     @Environment(\.openURL) var openURL
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewRouter: ViewRouter
     @State private var showSheet : Bool = false
     
@@ -23,31 +24,6 @@ struct SideMenuView: View {
     var body: some View {
         VStack(alignment: .leading) {
             AppIconView()
-//            HStack{
-//                Text("FAQ")
-//                Spacer()
-//            }
-//            .padding(.top)
-//            .padding(.leading)
-//            .frame(maxWidth:.infinity)
-//            .contentShape(Rectangle())
-//            .onTapGesture {
-//                openURL(URL(string:"https://rebuild.games/faq")!)
-//                viewRouter.sideMenuState = .isHidden
-//            }
-//            HStack{
-//                Text("About us")
-//                Spacer()
-//            }
-//            .padding(.top)
-//            .padding(.leading)
-//            .frame(maxWidth:.infinity)
-//            .contentShape(Rectangle())
-//            .onTapGesture {
-////                openURL(URL(string:"https://arcane-3b5c3.web.app/terms-of-condition")!)
-//                viewRouter.sideMenuState = .isHidden
-//            }
-//            Divider()
             // 利用規約
             HStack{
                 Text("term of service")
@@ -58,7 +34,7 @@ struct SideMenuView: View {
             .frame(maxWidth:.infinity)
             .contentShape(Rectangle())
             .onTapGesture {
-//                openURL(URL(string:"https://arcane-3b5c3.web.app/terms-of-condition")!)
+                openURL(URL(string:"https://rebuild-tokyo.com/aplicationterm/")!)
                 viewRouter.sideMenuState = .isHidden
             }
             
@@ -76,29 +52,11 @@ struct SideMenuView: View {
             .frame(maxWidth:.infinity)
             .contentShape(Rectangle())
             .onTapGesture {
-//                openURL(URL(string:"https://arcane-3b5c3.web.app/privacy-policy")!)
+                openURL(URL(string:"https://rebuild-tokyo.com/privacypolicy/")!)
                 
                 viewRouter.sideMenuState = .isHidden
             }
             
-            // contact
-//            HStack {
-////                Image(systemName: "phone.fill")
-////                    .imageScale(.large)
-////                    .frame(width: 32, height: 32)
-//                Text("contact us")
-////                    .font(.headline)
-//                Spacer()
-//            }
-//            .padding(.top)
-//            .padding(.leading)
-//            .frame(maxWidth:.infinity)
-//            .contentShape(Rectangle())
-//            .onTapGesture {
-//                openURL(URL(string:"https://twitter.com/Arcane_tweet")!)
-//
-//                viewRouter.sideMenuState = .isHidden
-//            }
             
             // staff management
             if viewRouter.loginUserType == .staff{
@@ -152,7 +110,7 @@ struct SideMenuView: View {
 //                        .resizable()
 //                        .frame(width: 24, height: 24)
                     Spacer()
-                    Image("icon_instagram")
+                    Image(colorScheme == .dark ? "icon_instagram_dark" : "icon_instagram")
                         .resizable()
                         .frame(width: 24, height: 24)
                         .onTapGesture {
@@ -162,8 +120,6 @@ struct SideMenuView: View {
                         }
                     Spacer()
                 }
-                .padding(.top)
-                .padding(.bottom)
                 
             }
             .padding(.top)
@@ -171,7 +127,7 @@ struct SideMenuView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.white))
+        .background(ColorManager.backGroundMain)
         .edgesIgnoringSafeArea(.all)
         .sheet(isPresented: $showSheet, content: {
             switch sheetType{
@@ -184,10 +140,11 @@ struct SideMenuView: View {
 }
 
 struct AppIconView: View {
+    @Environment(\.colorScheme) var colorScheme
     var body : some View {
         HStack{
             Spacer()
-            Image("headerIcon")
+            Image(colorScheme == .dark ? "headerIcon_dark" : "headerIcon")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 100.0, height: 50.0)

@@ -245,7 +245,7 @@ struct CreateCustomerView: View {
 //
                 batch.commit(){ err in
                     if let err = err {
-                        print("Error writing reservation :  \(err)")
+//                        print("Error writing reservation :  \(err)")
                         gcp.dismiss()
                         self.alertType = .failed
                         self.isAlertShowing.toggle()

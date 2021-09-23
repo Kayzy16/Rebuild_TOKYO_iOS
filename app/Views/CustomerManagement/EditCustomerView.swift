@@ -195,7 +195,7 @@ struct EditCustomerView: View {
         gcp.show(message: "Loading...", style: ProgressCircleStyle())
         Auth.auth().sendPasswordReset(withEmail: withEmail) { error in
             if let error = error {
-                print("password reset failed : \(error)")
+//                print("password reset failed : \(error)")
                 gcp.dismiss()
                 self.alertType = .failed
                 self.mailInitAlert.toggle()
@@ -351,7 +351,7 @@ struct EditCustomerView: View {
         ]) { err in
             if let err = err {
                 gcp.dismiss()
-                print("Error adding document: \(err)")
+//                print("Error adding document: \(err)")
                 self.alertType = .failed
                 self.updateAlert.toggle()
             } else {
@@ -382,7 +382,7 @@ struct EditCustomerView: View {
         db.collection("50_RESERVATION").whereField("20_CUSTOMER_ID", isEqualTo: with.id)
             .getDocuments() { (querySnapshot, err) in
                 if let err = err {
-                    print("Error getting documents: \(err)")
+//                    print("Error getting documents: \(err)")
                     gcp.dismiss()
                     self.alertType = .failed
                     self.deleteAlert.toggle()
@@ -399,12 +399,12 @@ struct EditCustomerView: View {
                         return nil
                     }) { (object, error) in
                         if let error = error {
-                            print("Transaction failed: \(error)")
+//                            print("Transaction failed: \(error)")
                             gcp.dismiss()
                             self.alertType = .failed
                             self.deleteAlert.toggle()
                         } else {
-                            print("Transaction successfully committed!")
+//                            print("Transaction successfully committed!")
                             gcp.dismiss()
                             for i in 0..<firestoreData.customer.entities.count {
                                 if firestoreData.customer.entities[i].id == with.id{

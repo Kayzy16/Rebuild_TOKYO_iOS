@@ -22,10 +22,10 @@ class ReservationViewModel : ObservableObject {
         DispatchQueue.global().async {
             
             self.db.collection("50_RESERVATION")
-//                .whereField("30_START_TIME", isGreaterThanOrEqualTo: Timestamp(date: getJSTDate(fromUTC: Date())))
+                .whereField("30_START_TIME", isGreaterThanOrEqualTo: Timestamp(date: Date()))
                 .addSnapshotListener{ (QuerySnapshot, error) in
                 guard let documents = QuerySnapshot?.documents else {
-                    print("cannot get reserva data from firestore")
+//                    print("can_not get reserva data from firestore")
                     return
                 }
                 
@@ -41,7 +41,7 @@ class ReservationViewModel : ObservableObject {
                     reservation.updateDate   = (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue()
                     reservation.deleteFlg    = data["99_DELETE_FLG"] as? Int ?? 0
                     
-                    print("reservation data : \(reservation)")
+//                    print("reservation data : \(reservation)")
                     
                     return reservation
                 }

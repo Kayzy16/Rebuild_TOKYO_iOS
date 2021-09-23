@@ -21,7 +21,7 @@ struct LoginView: View {
     
     @State private var login_user_id = ""
     @State private var login_user_type = 0
-    @State private var error_msg = "メールアドレス、またはパスワードが謝っています"
+    @State private var error_msg = "メールアドレス、またはパスワードが誤っています"
     
     @EnvironmentObject var viewRouter: ViewRouter
     
@@ -97,7 +97,7 @@ struct LoginView: View {
                 
             }
             .onAppear{
-                DispatchQueue.main.asyncAfter(deadline:.now()+3.0){
+                DispatchQueue.main.asyncAfter(deadline:.now()+1.5){
                     withAnimation(){
                         self.loadingComp.toggle()
                     }
@@ -111,12 +111,13 @@ struct LoginView: View {
         Auth.auth().signIn(withEmail: mail, password: password){(result,error) in
             if error != nil{
                 self.auth_error = true
-                print(error)
-                error_msg = "メールアドレス、またはパスワードが謝っています"
+//                print(error)
+                error_msg = "メールアドレス、またはパスワードが誤っています"
                 gcp.dismiss()
             }
             else{
                 getSystemMasterData()
+                firestoreData.fetchData()
             }
         }
     }
@@ -142,7 +143,7 @@ struct LoginView: View {
             updateUI()
             
           } else {
-            print("Document does not exist in cache")
+//            print("Document does not exist in cache")
           }
         }
     }

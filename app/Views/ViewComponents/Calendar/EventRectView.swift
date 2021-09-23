@@ -15,7 +15,6 @@ struct EventRectView: View {
     
     @State var shift : StaffShift?
     @State var reservation : Reservation?
-//    @State var customer:Customer?
     
     var date : Date
     var startTime : Date
@@ -32,13 +31,21 @@ struct EventRectView: View {
         case failed
     }
     
-    @State private var spotState : SpotState = .disabled
+    @State private var spotState : SpotState = .initial
     enum SpotState {
         case initial
         case disabled
         case enabled
         case occupied
         case reserved
+        case passed
+    }
+    
+    
+    init(date:Date,startTime:Date,seq:Int){
+        self.date = date
+        self.startTime = startTime
+        self.seq = seq
     }
     
     
@@ -50,34 +57,39 @@ struct EventRectView: View {
             if getSpotState() == .reserved {
                 Text(getStaffName(date: date, startTime: startTime, seq: seq) ?? "")
                     .font(.caption)
-//                Text(ReservationDao.getCustomerName(by: self.shift!.id) ?? "エラー" + " 様")
-//                    .font(.caption)
-                if nil != self.reservation{
-                    Text(firestoreData.customer.getName(byCustomerId: self.reservation!.customerId) ?? "エラー" + " 様")
-                        .font(.caption)
-                }
+                    .foregroundColor(Color(.black))
+                Text(getCustomerName()  + " 様")
+                    .font(.caption)
+                    .foregroundColor(Color(.black))
             }
-            else if getSpotState() == .enabled {
+            if getSpotState() == .enabled {
                 Text(getStaffName(date: date, startTime: startTime, seq: seq) ?? "")
                     .font(.caption)
+                    .foregroundColor(Color(.black))
                 Text("予約なし")
                     .font(.caption)
+                    .foregroundColor(Color(.black))
             }
-            else{
-                if getSpotState() == .occupied{
-                    Text(getStaffName(date: date, startTime: startTime, seq: seq) ?? "")
-                        .font(.caption)
-                    Text("予約なし")
-                        .font(.caption)
-                }
-                else if getSpotState() == .initial{
-                    Text("シフト未提出")
-                        .font(.caption)
-                }
-                else {
-                    Text("")
-                        .font(.caption)
-                }
+            if getSpotState() == .occupied{
+                Text(getStaffName(date: date, startTime: startTime, seq: seq) ?? "")
+                    .font(.caption)
+                    .foregroundColor(Color(.black))
+                Text("予約なし")
+                    .font(.caption)
+                    .foregroundColor(Color(.black))
+            }
+            if getSpotState() == .initial{
+                Text("シフト未提出")
+                    .font(.caption)
+                    .foregroundColor(Color(.black))
+            }
+            if getSpotState() == .disabled{
+                Text("")
+                    .font(.caption)
+            }
+            if getSpotState() == .passed{
+                Text("")
+                    .font(.caption)
             }
             
             Spacer()
@@ -86,9 +98,10 @@ struct EventRectView: View {
         .background(getSpotColorByState())
         .shadow(color: .gray, radius: 3, x: 2, y: 2)
         .onTapGesture {
-            if getSpotState() == .initial || getSpotState() == .enabled {
+            if getSpotState() == .initial || getSpotState() == .enabled || getSpotState() == .occupied{
                 reservationAlert.toggle()
             }
+            print(getSpotState())
         }
         .alert(isPresented:$reservationAlert){
             getAlertByState()
@@ -97,40 +110,66 @@ struct EventRectView: View {
 //            self.shift = StaffShiftDao.get(date: date, startTime: startTime, seq: seq)
             self.shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
             if nil != self.shift {
-            self.reservation = firestoreData.reservation.get(byShiftId: self.shift!.id)
+                self.reservation = firestoreData.reservation.get(byShiftId: self.shift!.id)
             }
-            self.spotState = .initial
+//            self.spotState = .initial
             self.spotState = getSpotState()
         }
     }
     
+    private func getCustomerName() -> String {
+        if getSpotState() == .reserved{
+            let shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
+            print(shift)
+            if nil != shift {
+                let reservation = firestoreData.reservation.get(byShiftId: shift!.id)
+                print(reservation)
+                let name = firestoreData.customer.getName(byCustomerId: reservation!.customerId) ?? ""
+                return name
+            }
+        }
+        else {
+            return ""
+        }
+        return ""
+    }
+    
     private func getSpotState() -> SpotState {
-//        print(self.date)
         if isLessonPassed(startTime: self.startTime){
-            return .disabled
+            return .passed
         }
         
-        // シフトと予約を取得
-//        let shift = StaffShiftDao.get(date: date, startTime: startTime, seq: seq)
-        let shiftfromFirestore = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
-//        print(shiftfromFirestore ?? "no shift found")
+//        if isNotAssignable(){
+//            return .disabled
+//        }
         
-        if nil != shiftfromFirestore { // シフト提出ずみ
+        // シフトと予約を取得
+        let shiftfromFirestore = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
+        
+        // シフトデータあり
+        if nil != shiftfromFirestore {
+            
+            // 顧客による予約データあり
             if isReserved(shift: shiftfromFirestore!){
                 return .reserved
             }
             
+            // 自分のシフト
             if isMyShift(shift: shiftfromFirestore!){
                 return .enabled
             }
+            // 他人のシフト
             else {
                 return .occupied
             }
         }
+        // シフトデータなし
         else {
-            if isBookedAnotherSpot(){
+            // 同時間帯の他スポットでシフト提出ずみ
+            if isNotAssignable(){
                 return .disabled
             }
+            // シフト未提出
             else {
                 return .initial
             }
@@ -188,8 +227,20 @@ struct EventRectView: View {
         }
     }
     
+    private func isNotAssignable() -> Bool {
+        let before = firestoreData.staffShift.count(staffId: viewRouter.loginStaffId, date: date, startTime: addMin(to: startTime, by: -30))
+        let after = firestoreData.staffShift.count(staffId: viewRouter.loginStaffId, date: date, startTime: addMin(to: startTime, by: 30))
+        if (before + after) > 0{
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    
     private func getAlertByState() -> Alert{
-        switch self.spotState {
+        switch getSpotState() {
+            case .passed   : return showErrorAlert()
             case .initial  : return showCreateShiftAlert()
             case .disabled : return showErrorAlert()
             case .enabled  : return showDeleteShiftAlert()
@@ -201,7 +252,6 @@ struct EventRectView: View {
                     }
                     else{
                         return showDeleteShiftAlert()
-                        
                     }
                 }
                 else{
@@ -212,6 +262,7 @@ struct EventRectView: View {
     
     private func getSpotColorByState() -> Color{
         switch getSpotState() {
+            case .passed : return ColorManager.darkGray
             case .initial  : return ColorManager.darkGray
             case .disabled : return ColorManager.darkGray
             case .enabled  : return Color.white
@@ -231,32 +282,119 @@ struct EventRectView: View {
     }
     private func showOccupiedAlert() -> Alert {
         return Alert(
-            title: Text("シフト変更不可"),
-            message: Text("他のインストラクターのシフトは変更できません"),
+            title: Text("他のトレーナがシフト提出済みです"),
+            message: Text("他の時間を選択してください。"),
             dismissButton:
                 .default(
                     Text("OK")
                 ))
     }
     
-    func saveData(with:StaffShift){
+    func checkSimutaneousAssign(with:StaffShift){
         gcp.show(message: "Loading...", style: ProgressCircleStyle())
+        let db = Firestore.firestore()
+        let settings = FirestoreSettings()
+        settings.isPersistenceEnabled = false
+        db.settings = settings
+
+        db.collection("40_STAFF_SHIFT")
+            .whereField("40_START_TIME",isGreaterThanOrEqualTo: Timestamp(date: getJSTDate(fromUTC: self.startTime)))
+            .getDocuments{(querySnapshot, err) in
+                if let err = err {
+//                    print("Error getting documents: \(err)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        let data = document.data()
+                        let startTimeByFS = (data["40_START_TIME"] as? Timestamp)!.dateValue()
+//                        print(self.startTime)
+                        if startTimeByFS == self.startTime{
+                            // コンフリクトエラー
+                            gcp.dismiss()
+                            self.alertType = .confirm
+                            self.reservationAlert.toggle()
+                            break;
+                        }
+                    }
+                    saveData(with: with)
+                }
+            }
+    }
+    
+    func saveData(with:StaffShift){
+//        gcp.show(message: "Loading...", style: ProgressCircleStyle())
         let db = Firestore.firestore()
         let settings = FirestoreSettings()
         settings.isPersistenceEnabled = false
         db.settings = settings
         let docRef = db.collection("40_STAFF_SHIFT").document(with.id)
         
-        let newData = StaffShift()
-        newData.staffId    = with.staffId
-        newData.startDate  = with.startDate
-        newData.endDate    = with.endDate
-        newData.startTime  = with.startTime
-        newData.seq        = with.seq
-        newData.createDate = with.createDate
-        newData.updateDate = with.updateDate
-        newData.deleteFlg  = with.deleteFlg
+//        db.runTransaction({ (transaction, errorPointer) -> Any? in
+//
+//            db.collection("40_STAFF_SHIFT")
+//            .whereField("40_START_Time",isEqualTo: Timestamp(date: with.startTime))
+//                .addSnapshotListener{(QuerySnapshot, error) in
+//                    let documents = QuerySnapshot?.documents
+//                    if 0 != documents?.count  {
+//                        // バッチ書き込み
+//                        transaction.setData([
+//                            "10_STAFF_ID"   : with.staffId,
+//                            "20_START_DATE" : Timestamp(date:with.startDate),
+//                            "30_END_DATE"   : Timestamp(date:with.endDate),
+//                            "40_START_TIME" : Timestamp(date:with.startTime),
+//                            "50_SEQ"        : with.seq,
+//                            "70_CREATE_DATE": Timestamp(date:with.createDate),
+//                            "80_UPDATE_DATE": Timestamp(date:with.updateDate),
+//                            "99_DELETE_FLG" : with.deleteFlg
+//                        ], forDocument: docRef)
+//
+//                        return
+//                    }
+//                    else{
+//                        print(documents?.description)
+//                        // コンフリクトエラー
+//                        let error = NSError(
+//                                    domain: "AppErrorDomain",
+//                                    code: -1,
+//                                    userInfo: [
+//                                        NSLocalizedDescriptionKey: "Unable to assign shift due to confliction"
+//                                    ]
+//                                )
+//                        errorPointer?.pointee = error
+//                    }
+//
+//            }
+//            return nil
+//        }) { (object, error) in
+//            if let error = error {
+//                print("Transaction failed: \(error)")
+//                gcp.dismiss()
+////                print("Error writing staff shift : \(error)")
+////                self.spotState = .initial
+//                self.alertType = .confirm
+//                self.reservationAlert.toggle()
+//
+//            } else {
+//                gcp.dismiss()
+//                let newData = StaffShift()
+//                newData.staffId    = with.staffId
+//                newData.startDate  = with.startDate
+//                newData.endDate    = with.endDate
+//                newData.startTime  = with.startTime
+//                newData.seq        = with.seq
+//                newData.createDate = with.createDate
+//                newData.updateDate = with.updateDate
+//                newData.deleteFlg  = with.deleteFlg
+//                print("Transaction successfully committed!")
+//                gcp.dismiss()
+//                firestoreData.staffShift.entities.append(newData);
+////                self.spotState = .initial
+//                self.alertType = .complete
+//                self.reservationAlert.toggle()
+//            }
+//        }
         
+        
+
         docRef.setData([
             "10_STAFF_ID"   : with.staffId,
             "20_START_DATE" : Timestamp(date:with.startDate),
@@ -269,15 +407,24 @@ struct EventRectView: View {
         ],merge: true){ error in
             if let error = error {
                 gcp.dismiss()
-                print("Error writing staff shift : \(error)")
-                self.spotState = .initial
+//                print("Error writing staff shift : \(error)")
+//                self.spotState = .initial
                 self.alertType = .failed
                 self.reservationAlert.toggle()
             }
             else{
                 gcp.dismiss()
+                let newData = StaffShift()
+                newData.staffId    = with.staffId
+                newData.startDate  = with.startDate
+                newData.endDate    = with.endDate
+                newData.startTime  = with.startTime
+                newData.seq        = with.seq
+                newData.createDate = with.createDate
+                newData.updateDate = with.updateDate
+                newData.deleteFlg  = with.deleteFlg
                 firestoreData.staffShift.entities.append(newData);
-                self.spotState = .initial
+//                self.spotState = .initial
                 self.alertType = .complete
                 self.reservationAlert.toggle()
             }
@@ -285,7 +432,6 @@ struct EventRectView: View {
     }
     
     func delete(with:StaffShift){
-        gcp.show(message: "Loading...", style: ProgressCircleStyle())
         let db = Firestore.firestore()
         let settings = FirestoreSettings()
         settings.isPersistenceEnabled = false
@@ -314,26 +460,29 @@ struct EventRectView: View {
         ],merge: true){ error in
             if let error = error {
                 gcp.dismiss()
-                print("Error writing staff shift : \(error)")
-                self.spotState = .enabled
+//                print("Error writing staff shift : \(error)")
+//                self.spotState = .enabled
                 self.alertType = .failed
                 self.reservationAlert.toggle()
             }
             else{
-                gcp.dismiss()
-                self.spotState = .enabled
-                self.alertType = .complete
-                self.reservationAlert.toggle()
                 
+//                self.spotState = .enabled
                 for i in 0..<firestoreData.staffShift.entities.count{
                     if with.id == firestoreData.staffShift.entities[i].id{
-                        firestoreData.staffShift.entities.remove(at: i)
+                        firestoreData.staffShift.entities[i].deleteFlg = 1
+                        self.shift = nil
                         break
                     }
                 }
+                gcp.dismiss()
+                self.alertType = .complete
+                self.reservationAlert.toggle()
             }
         }
     }
+    
+    
     
     private func assignShift(){
         if nil == self.shift{
@@ -344,7 +493,8 @@ struct EventRectView: View {
             self.shift!.startTime = startTime
             self.shift!.seq = seq
 //            StaffShiftDao.save(with: self.shift!)
-            saveData(with: self.shift!)
+//            saveData(with: self.shift!)
+            checkSimutaneousAssign(with: self.shift!)
         }
         else {
             let newShift = StaffShift()
@@ -354,7 +504,8 @@ struct EventRectView: View {
             newShift.startTime = startTime
             newShift.seq = seq
 //            StaffShiftDao.update(on: self.shift!, by: newShift)
-            saveData(with: newShift)
+//            saveData(with: newShift)
+            checkSimutaneousAssign(with: newShift)
         }
     }
     
@@ -375,11 +526,11 @@ struct EventRectView: View {
                     )
             case .complete :
                 return Alert(
-                    title: Text("シフトを提出しました"),
+                    title: Text("シフトを取り下げました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-                        spotState = .enabled
+//                        spotState = .initial
                     })
                 )
         case .failed :
@@ -390,6 +541,7 @@ struct EventRectView: View {
             )
         }
     }
+    
     private func showDeleteShiftAlert() -> Alert {
         switch alertType {
             case .confirm :
@@ -404,16 +556,20 @@ struct EventRectView: View {
                                 if(nil != self.shift){
                                     delete(with: self.shift!)
                                 }
+                                else{
+                                    self.alertType = .complete
+                                    self.reservationAlert.toggle()
+                                }
                             }
                         )
                     )
             case .complete :
                 return Alert(
-                    title: Text("シフトを取り下げました"),
+                    title: Text("シフトを提出しました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-                        spotState = .initial
+//                        spotState = .enabled
                     })
                 )
         case .failed :

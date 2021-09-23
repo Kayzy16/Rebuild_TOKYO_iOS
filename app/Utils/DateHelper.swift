@@ -49,6 +49,18 @@ public func getWeekDayInt(from : Date) -> Int {
     return day
 }
 
+public func getHourInt(from : Date) -> Int {
+    let calendar = Calendar(identifier: .gregorian)
+    let hour = calendar.component(.hour, from: from)
+    return hour
+}
+
+public func getMinInt(from : Date) -> Int {
+    let calendar = Calendar(identifier: .gregorian)
+    let min = calendar.component(.minute, from: from)
+    return min
+}
+
 public func maxLessonNum() -> Int {
 //    let n = (business_end - business_start + (lesson_rest_length/60)) / ((lesson_length/60) + (lesson_rest_length/60))
     
@@ -93,6 +105,13 @@ public func lessonEndTime(d:Date,index:Int) -> Date{
     let calendar = Calendar(identifier: .gregorian)
     let date = calendar.date(from: DateComponents(year:getYearInt(from: d),month:getMonthInt(from: d),day:getDayInt(from: d),hour: business_start,minute: 0,second: 0,nanosecond: 0))!
     let modifiedDate = Calendar.current.date(byAdding:.minute,value:lesson_length+(lesson_length+lesson_rest_length)*index,to:date)!
+    return modifiedDate
+}
+
+public func addMin(to:Date,by:Int) -> Date {
+    let calendar = Calendar(identifier: .gregorian)
+    let date = calendar.date(from: DateComponents(year:getYearInt(from: to),month:getMonthInt(from: to),day:getDayInt(from: to),hour:getHourInt(from: to),minute:getMinInt(from: to),second: 0,nanosecond: 0))!
+    let modifiedDate = Calendar.current.date(byAdding:.minute,value:by,to:date)!
     return modifiedDate
 }
 

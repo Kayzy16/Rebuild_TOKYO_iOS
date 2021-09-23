@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    
+    @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewRouter : ViewRouter
     @EnvironmentObject var firestoreData : FirestoreDataRepository
     
@@ -38,17 +38,20 @@ struct MainView: View {
                                         .fill(ColorManager.darkOrage)
                                         .frame(height: 40)
                                     
-                                    Text(selectedStaff?.name ?? "select your instructor")
+                                    Text(selectedStaff?.name ?? "select your trainer")
                                         .frame(height: 40)
                                         .foregroundColor(.white)
                                 }
                             }
                             .onAppear{
-                                if nil == selectedStaff{
-                                    if !firestoreData.staff.entities.isEmpty{
-                                        selectedStaff = firestoreData.staff.entities[0]
-                                    }
+                                if viewRouter.selectedStaffId.isEmpty{
+                                    selectedStaff = nil
                                 }
+//                                if nil == selectedStaff{
+//                                    if !firestoreData.staff.entities.isEmpty{
+//                                        selectedStaff = firestoreData.staff.entities[0]
+//                                    }
+//                                }
                             }
                             .padding()
                         }
@@ -77,7 +80,7 @@ struct MainView: View {
                     }
                 }
                 
-                Image("headerIcon")
+                Image(colorScheme == .dark ? "headerIcon_dark" : "headerIcon")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100.0, height: 50.0)

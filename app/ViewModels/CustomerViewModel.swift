@@ -26,7 +26,7 @@ class CustomerViewModel : ObservableObject {
                 .whereField("99_DELETE_FLG", isEqualTo: 0)
                 .addSnapshotListener{ (QuerySnapshot, error) in
                 guard let documents = QuerySnapshot?.documents else {
-                    print("cannot get reserva data from firestore")
+//                    print("cannot get reserva data from firestore")
                     return
                 }
                 
@@ -39,7 +39,7 @@ class CustomerViewModel : ObservableObject {
                     cus.program = data["30_PROGRAM"] as? String ?? ""
                     cus.deleteFlg = data["99_DELETE_FLG"] as? Int ?? 0
                     
-                    print("customer data : \(cus)")
+//                    print("customer data : \(cus)")
                     
                     return cus
                 }

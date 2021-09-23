@@ -17,6 +17,7 @@ struct StaffPickerView: View {
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
+    
     var body: some View {
         List {
             ForEach(staffList,id:\.id) { (stff : Staff) in
