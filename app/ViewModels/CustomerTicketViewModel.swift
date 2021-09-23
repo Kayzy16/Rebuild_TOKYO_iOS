@@ -39,7 +39,7 @@ class CustomerTicketViewModel:ObservableObject {
                     }
                 }
                 else{
-                    print("failed to get Customer Ticket for : \(customerId)")
+//                    print("failed to get Customer Ticket for : \(customerId)")
                 }
             }
         }
@@ -66,7 +66,7 @@ class CustomerTicketViewModel:ObservableObject {
                                     "80_UPDATE_DATE" : now
                                 ]) { err in
                                     if let err = err {
-                                        print("Error initializing document: \(err)")
+//                                        print("Error initializing document: \(err)")
                                     } else {
                                         self.entity.ticketLeft = initialTicketNum
                                     }

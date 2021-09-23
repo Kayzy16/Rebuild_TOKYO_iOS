@@ -20,16 +20,11 @@ class StaffShiftViewModel : ObservableObject {
     
     func fetchData(){
         DispatchQueue.global().async {
-            
-            // TODO 現在時間より後のシフトをget
-            
-            print(Date())
-            
             self.db.collection("40_STAFF_SHIFT")
-                .whereField("40_START_TIME", isGreaterThanOrEqualTo: Timestamp(date: getJSTDate(fromUTC: Date())))
+                .whereField("40_START_TIME", isGreaterThanOrEqualTo: Timestamp(date: Date()))
                 .addSnapshotListener{ (QuerySnapshot, error) in
                 guard let documents = QuerySnapshot?.documents else {
-                    print("cannot get staff data from firestore")
+//                    print("cannot get staff data from firestore")
                     return
                 }
                 
@@ -55,7 +50,7 @@ class StaffShiftViewModel : ObservableObject {
 //                    staffShift.updateDate   = getJSTDate(fromUTC: (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue())
                     staffShift.deleteFlg    = data["99_DELETE_FLG"] as? Int ?? 0
                     
-                    print("staff shift data : \(staffShift)")
+//                    print("staff shift data : \(staffShift)")
                     
                     return staffShift
                 }
@@ -89,7 +84,7 @@ class StaffShiftViewModel : ObservableObject {
             "99_DELETE_FLG" : 1
         ],merge: true){ error in
             if let error = error {
-                print("Error writing staff shift : \(error)")
+//                print("Error writing staff shift : \(error)")
             }
             else{
                 for i in 0..<self.entities.count{
@@ -128,6 +123,7 @@ class StaffShiftViewModel : ObservableObject {
     
     func getData(staffId:String,date:Date,startTime:Date) -> StaffShift? {
         if entities.count > 0 {
+//            print(entities)
             for shift in entities {
                 if (shift.startDate == date && shift.startTime == startTime && shift.staffId == staffId && shift.deleteFlg == 0){
                     return shift
@@ -146,7 +142,6 @@ class StaffShiftViewModel : ObservableObject {
                 }
             }
         }
-        
         return result
     }
 }

@@ -29,6 +29,9 @@ struct CalendarGridView: View {
                             .environmentObject(firestoreData)
                     }
                 }
+                .onAppear{
+//                    print(weekStartDay)
+                }
             })
         }
     }

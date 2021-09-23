@@ -108,10 +108,10 @@ public func lessonEndTime(d:Date,index:Int) -> Date{
     return modifiedDate
 }
 
-public func add30Min(to:Date) -> Date {
+public func addMin(to:Date,by:Int) -> Date {
     let calendar = Calendar(identifier: .gregorian)
     let date = calendar.date(from: DateComponents(year:getYearInt(from: to),month:getMonthInt(from: to),day:getDayInt(from: to),hour:getHourInt(from: to),minute:getMinInt(from: to),second: 0,nanosecond: 0))!
-    let modifiedDate = Calendar.current.date(byAdding:.minute,value:30,to:date)!
+    let modifiedDate = Calendar.current.date(byAdding:.minute,value:by,to:date)!
     return modifiedDate
 }
 

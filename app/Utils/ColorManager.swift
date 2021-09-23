@@ -16,4 +16,5 @@ struct ColorManager {
     static let lightGray       = Color("lightGray")
     static let darkGray        = Color("darkGray")
     static let accentNavy      = Color("accentNavy")
+    static let backGroundMain  = Color("backGround")
 }

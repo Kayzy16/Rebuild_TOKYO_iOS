@@ -38,7 +38,7 @@ class StaffViewModel:ObservableObject {
                 .whereField("99_DELETE_FLG", isEqualTo: 0)
                 .addSnapshotListener{ (QuerySnapshot, error) in
                 guard let documents = QuerySnapshot?.documents else {
-                    print("cannot get staff data from firestore")
+//                    print("cannot get staff data from firestore")
                     return
                 }
                 

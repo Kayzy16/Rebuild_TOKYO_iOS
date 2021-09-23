@@ -21,12 +21,21 @@ struct CalendarDayView: View {
             VStack() {
                 ForEach(0..<maxLessonNum()) { i in
                     EventFrameView(date: day, startTime: lessonStartTime(d: day, index: i),startTimeLabel: lessonStartTime(index: i), endTimeLabel:lessonEndTime(index: i))
+//                    EventFrameView(date: day, startTime: lessonStartTime(d: day, index: i))
                         .padding(.bottom)
                         .environmentObject(firestoreData)
                 }
+                
+//                Rectangle()
+//                    .frame(width: event_frame_width, height: event_frame_height/2)
+//
             }
             
 //            VStack() {
+//
+//                Rectangle()
+//                    .frame(width: event_frame_width, height: event_frame_height/2)
+//
 //                ForEach(0..<maxLessonNum()) { i in
 //                    EventFrameView(date: day, startTime: lessonStartTime(d: day, index: i),startTimeLabel: lessonStartTime(index: i), endTimeLabel:lessonEndTime(index: i))
 //                        .padding(.bottom)

@@ -160,7 +160,7 @@ struct EditStaffView: View {
         gcp.show(message: "Loading...", style: ProgressCircleStyle())
         Auth.auth().sendPasswordReset(withEmail: withEmail) { error in
             if let error = error {
-                print("password reset failed : \(error)")
+//                print("password reset failed : \(error)")
                 gcp.dismiss()
                 self.alertType = .failed
                 self.mailInitAlert.toggle()
@@ -278,7 +278,7 @@ struct EditStaffView: View {
                 self.updateAlert.toggle()
                 
                 for i in 0..<firestoreData.staff.entities.count {
-                    print(firestoreData.staff.entities[i].id)
+//                    print(firestoreData.staff.entities[i].id)
                     if firestoreData.staff.entities[i].id == with.id{
                         firestoreData.staff.entities[i].name = with.name
                     }

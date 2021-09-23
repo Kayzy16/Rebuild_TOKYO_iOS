@@ -202,7 +202,7 @@ struct CreateStaffView: View {
                     TAG_DELETE_FLG:0
                 ]) { err in
                     if let err = err {
-                        print("error : " + err.localizedDescription)
+//                        print("error : " + err.localizedDescription)
                         gcp.dismiss()
                         self.alertType = .failed
                         self.isAlertShowing.toggle()

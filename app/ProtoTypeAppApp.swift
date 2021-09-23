@@ -15,6 +15,7 @@ struct ProtoTypeAppApp: App {
     
     @StateObject var viewRouter = ViewRouter()
     @StateObject var firestoreData = FirestoreDataRepository()
+    @State private var reloadFlag = true
     
     @Environment(\.scenePhase) private var scenePhase
     
@@ -27,14 +28,27 @@ struct ProtoTypeAppApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView().environmentObject(viewRouter).environmentObject(firestoreData)
+            if reloadFlag {
+                ContentView().environmentObject(viewRouter).environmentObject(firestoreData)
+                    .onAppear{
+//                        print("リロード　A")
+                        viewRouter.selectedStaffId = ""
+                    }
+            }
+            else{
+                ContentView().environmentObject(viewRouter).environmentObject(firestoreData)
+                    .onAppear{
+//                        print("リロード　B")
+                        viewRouter.selectedStaffId = ""
+                    }
+            }
         }
         .onChange(of:scenePhase) { phase in
             if phase == .background {
 //                print("バックグラウンド！")
             }
             if phase == .active {
-                print("フォアグラウンド！")
+//                print("データをフェッチ")
                 renewData()
             }
             if phase == .inactive {
@@ -52,9 +66,9 @@ struct ProtoTypeAppApp: App {
             let settings = FirestoreSettings()
             settings.isPersistenceEnabled = false
             db.settings = settings
-            let docRef = db.collection("30_CUSTOMER").document(user.uid)
-            docRef.getDocument { (document, error) in
-                
+            // カスタマだったらデータrenew
+            let cusDocRef = db.collection("30_CUSTOMER").document(user.uid)
+            cusDocRef.getDocument { (document, error) in
                 if nil != error {
                     withAnimation{viewRouter.currentPage = .auth}
                     return
@@ -72,6 +86,27 @@ struct ProtoTypeAppApp: App {
                     }
                 }
             }
+            // スタッフだったらデータをrenew
+            let stffDocRef = db.collection("20_STAFF").document(user.uid)
+            stffDocRef.getDocument { (document, error) in
+                if nil != error {
+                    withAnimation{viewRouter.currentPage = .auth}
+                    return
+                }
+                
+                if let document = document, document.exists {
+                    let data = document.data()
+                    let deleteFlg = data?["99_DELETE_FLG"] as? Int ?? 0
+                    if deleteFlg > 0{
+                        withAnimation{viewRouter.currentPage = .auth}
+                    }
+                    else{
+                        firestoreData.fetchData()
+                        checkTicket()
+                    }
+                }
+            }
+            
         }
         else{
             withAnimation{viewRouter.currentPage = .auth}
@@ -87,11 +122,11 @@ struct ProtoTypeAppApp: App {
             db.settings = settings
             let docRef = db.collection("60_CUSTOMER_TICKET").document(user.uid)
 
-            // TODO チケットの更新月と、現在の月を比較
             docRef.getDocument { (document, error) in
                 if let document = document, document.exists {
                     firestoreData.ticket.fetchData(customerId: user.uid)
                 }
+                reloadFlag.toggle()
             }
         }
     }

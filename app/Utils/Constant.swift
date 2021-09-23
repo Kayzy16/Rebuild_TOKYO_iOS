@@ -18,7 +18,7 @@ public var max_future_week       : Int = 6
 //public let reserve_limit_time    : Int = 45     // 予約受付終了時間
 
 public var event_frame_width     : CGFloat = 100
-public var event_frame_height    : CGFloat = 120
+public var event_frame_height    : CGFloat = 150
 public var event_frame_stroke    : CGFloat = 2
 
 public var event_rect_width      : CGFloat = 80

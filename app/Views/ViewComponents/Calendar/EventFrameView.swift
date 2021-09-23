@@ -17,12 +17,15 @@ struct EventFrameView: View {
     
     var date : Date
     var startTime : Date
-    var startTimeLabel : String
-    var endTimeLabel : String
+//    @State var startTime30minAfter : Bool = false
+    @State var startTimeLabel : String = ""
+    @State var endTimeLabel : String = ""
     
-    @State var shift       : StaffShift?
+//    @State var shift       : StaffShift?
     @State var staff       : Staff?
     @State var reservation : Reservation?
+    
+    @State private var conflictFlg : Bool = false
     
     enum SpotState {
         case disabled
@@ -34,7 +37,8 @@ struct EventFrameView: View {
     
     enum AlertType {
         case confirm
-        case complete
+        case reservationComplete
+        case deleteComplete
         case failed
     }
     @State private var alertType : AlertType = .confirm
@@ -47,47 +51,75 @@ struct EventFrameView: View {
             ZStack(alignment:.center){
                 
                 Rectangle()
-//                    .strokeBorder(getStrokeColor(),lineWidth: event_frame_stroke)
+                    .strokeBorder(getStrokeColor(),lineWidth: event_frame_stroke)
                     .foregroundColor(getSpotColorByState())
                     .background(getSpotColorByState())
-                    .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height))
+                    .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height/2))
                     .onTapGesture {
-                        if spotState != .disabled {
+                        if getSpotState() != .disabled {
                             reservationAlert.toggle()
                         }
-                        
-                        print(self.spotState)
-                        
+//                        print(self.date)
+//                        print(self.startTime)
+//                        print(self.startTimeLabel)
+//                        print(self.endTimeLabel)
+//                        print(getStartTime())
+//                        print(getSpotState())
+//                        print(firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime))
                     }
                     .alert(isPresented:$reservationAlert){
                         getAlertByState()
                     }
                 
                 VStack{
-                    Spacer()
-                    Text(startTimeLabel)
-                        .font(.caption2)
-                    Text("|")
-                        .font(.caption2)
-                        .padding(.top)
-                        .padding(.bottom)
-                    Text(endTimeLabel)
-                        .font(.caption2)
-                    Spacer()
-                }
-            }
-            .onAppear{
-                self.spotState = getSpotState()
-                print(viewRouter.selectedStaffId)
-                if(viewRouter.selectedStaffId.isEmpty){
-                    if firestoreData.staff.entities.count>0{
-                        viewRouter.selectedStaffId = firestoreData.staff.entities[0].id
+                    if getSpotState() != .disabled {
+                        Spacer()
+                        Text(getStartTimeLabel())
+                            .font(.caption2)
+                            .foregroundColor(Color(.black))
+                        Text(getTimeBarLabel())
+                            .font(.caption2)
+                            .foregroundColor(Color(.black))
+                        Text(getEndTimeLabel())
+                            .font(.caption2)
+                            .foregroundColor(Color(.black))
+                        Spacer()
                     }
                 }
-                self.shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime)
-                if self.shift != nil {
-                    self.reservation = firestoreData.reservation.get(byShiftId: self.shift!.id)
+                .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height/2))
+            }
+            .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height/2))
+            .onAppear{
+                
+//                if(viewRouter.selectedStaffId.isEmpty){
+//                    if firestoreData.staff.entities.count>0{
+//                        viewRouter.selectedStaffId = firestoreData.staff.entities[0].id
+//                    }
+//                }
+//                self.shift = nil
+//                self.startTime30minAfter = false
+                let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime)
+                if nil != shift {
+                    self.reservation = firestoreData.reservation.get(byShiftId: shift!.id)
+                    //枠の時間を設定
+                    self.startTimeLabel = getFormatedTime(from: self.startTime)
+                    self.endTimeLabel = getFormatedTime(from: addMin(to: self.startTime, by: lesson_length))
                 }
+                else{
+                    // 30分後のシフトがあるか確認
+                    let shift30af = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30))
+                    // あった場合、リザベーションを検索。枠の時間を設定
+                    if nil != shift30af{
+                        self.reservation = firestoreData.reservation.get(byShiftId: shift30af!.id)
+//                        self.startTime30minAfter = true
+                        //枠の時間を設定
+                        self.startTimeLabel = getFormatedTime(from: addMin(to: self.startTime, by: 30))
+                        self.endTimeLabel = getFormatedTime(from: addMin(to: self.startTime, by: 90))
+                        
+                    }
+                }
+                
+                self.spotState = getSpotState()
             }
         }
         else{ // スタッフ
@@ -100,60 +132,48 @@ struct EventFrameView: View {
                 
                 
                 VStack {
+                    Spacer()
+                    // シフト枠1のキャプション
                     HStack{
-                        Spacer()
                         Text(startTimeLabel)
                             .font(.caption2)
+                            .foregroundColor(Color(.black))
                         Text("-")
                             .font(.caption2)
-                            .padding(.top)
-                            .padding(.bottom)
+                            .foregroundColor(Color(.black))
                         Text(endTimeLabel)
                             .font(.caption2)
-                        Spacer()
+                            .foregroundColor(Color(.black))
                     }
-                    .frame(height:CGFloat(event_frame_height*0.2))
-                    ForEach(0..<max_reservable_spot){ i in
-                        EventRectView(date: self.date, startTime: self.startTime, seq: i)
-                            .environmentObject(firestoreData)
-                        Spacer()
-                    }
-
-                    // シフト枠1のキャプション
-//                    HStack{
-//                        Text(startTimeLabel)
-//                            .font(.caption2)
-//                        Text("-")
-//                            .font(.caption2)
-//                        Text(endTimeLabel)
-//                            .font(.caption2)
-//                    }
-////                    .frame(height:CGFloat(event_frame_height*0.1))
-//
-//                    // シフト枠1
-//                    EventRectView(date: self.date, startTime: self.startTime, seq: 0)
-//                    .environmentObject(firestoreData)
-//                    Spacer()
-//
-//
-//                    // シフト枠2のキャプション
-//                    HStack{
-//                        Spacer()
-//                        Text(startTimeLabel)
-//                            .font(.caption2)
-//                        Text("-")
-//                            .font(.caption2)
-//                            .padding(.top)
-//                            .padding(.bottom)
-//                        Text(endTimeLabel)
-//                            .font(.caption2)
-//                        Spacer()
-//                    }
 //                    .frame(height:CGFloat(event_frame_height*0.1))
-//
-//                    EventRectView(date: self.date, startTime: self.startTime, seq: 1)
-//                    .environmentObject(firestoreData)
-//                    Spacer()
+                    
+                    // シフト枠1
+                    EventRectView(date: self.date, startTime: self.startTime, seq: 0)
+                    .environmentObject(firestoreData)
+                    Spacer()
+                    
+                    
+                    // シフト枠2のキャプション
+                    HStack{
+                        Spacer()
+                        Text(getFormatedTime(from: addMin(to: startTime,by: 30)))
+                            .font(.caption2)
+                            .foregroundColor(Color(.black))
+                        Text("-")
+                            .font(.caption2)
+                            .foregroundColor(Color(.black))
+                            .padding(.top)
+                            .padding(.bottom)
+                        Text(getFormatedTime(from: addMin(to: startTime,by: 90)))
+                            .font(.caption2)
+                            .foregroundColor(Color(.black))
+                        Spacer()
+                    }
+                    .frame(height:CGFloat(event_frame_height*0.1))
+
+                    EventRectView(date: self.date, startTime: addMin(to: self.startTime, by: 30), seq: 0)
+                    .environmentObject(firestoreData)
+                    Spacer()
 //                    ForEach(0..<max_reservable_spot){ i in
 //                        EventRectView(date: self.date, startTime: self.startTime, seq: i)
 //                            .environmentObject(firestoreData)
@@ -163,6 +183,71 @@ struct EventFrameView: View {
                 .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height))
             }
         }
+    }
+    
+    private func getStartTime() -> Date{
+        if let shift30af = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30)){
+            return addMin(to: self.startTime, by: 30)
+        }
+        else{
+            return self.startTime
+        }
+    }
+    
+    private func getStartTimeLabel() -> String{
+//        print(self.date)
+//        print(self.startTime)
+        var shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime)
+        if shift != nil {
+            //枠の時間を設定
+            return getFormatedTime(from: getStartTime())
+        }
+        else {
+            shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30))
+
+            if nil != shift{
+                return getFormatedTime(from: addMin(to: self.startTime, by: 30))
+            }
+        }
+        
+        
+        
+        return ""
+    }
+    
+    private func getEndTimeLabel() -> String{
+        var shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime)
+        if shift != nil {
+            //枠の時間を設定
+            return getFormatedTime(from: addMin(to: getStartTime(), by: lesson_length))
+        }
+        else {
+            shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30))
+
+            if nil != shift{
+                return getFormatedTime(from: addMin(to: self.startTime, by: 90))
+            }
+        }
+        
+        return ""
+    }
+    
+    private func getTimeBarLabel() -> String{
+        var shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime:self.startTime)
+        if shift != nil {
+            //枠の時間を設定
+            return "|"
+        }
+        else {
+            shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30))
+
+            if nil != shift{
+                return "|"
+            }
+        }
+        
+        
+        return ""
     }
     
     
@@ -199,23 +284,36 @@ struct EventFrameView: View {
     
     private func getSpotState() -> SpotState{
         
-        if isLessonPassed(startTime: self.startTime){
+        if isLessonPassed(startTime: getStartTime()){
             return .disabled
         }
+        print(self.date)
+        let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: getStartTime())
+//        if nil == shift {
+//            shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30))
+//        }
         
-//        if let shift = StaffShiftDao.get(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime){
-        if let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime){
-            if isShiftValid(shift: shift){
-                if isBookedAnotherSpot(checking: shift){
+        
+        if nil != shift{
+            if isShiftValid(shift: shift!){
+                // これの修正が必要
+                if isBookedAnotherSpot(checking: shift!){
                     return .disabled
                 }
                 
-                if let reservation = firestoreData.reservation.get(byShiftId: shift.id){
+                if let reservation = firestoreData.reservation.get(byShiftId: shift!.id){
                     if isMyReserve(reservation: reservation){
                         return .reserved
                     }
                     else{
-                        return .disabled
+//                        if conflictFlg{
+//                            
+//                        }
+//                        else{
+//                            return .disabled
+//                        }
+                        
+                        return .conflicted
                     }
                 }
                 else{
@@ -233,7 +331,8 @@ struct EventFrameView: View {
     
     private func isBookedAnotherSpot(checking : StaffShift) -> Bool {
         var counter = 0
-        if let shifts = firestoreData.staffShift.getData(date: self.date, startTime: self.startTime){
+        // 同一枠
+        if let shifts = firestoreData.staffShift.getData(date: self.date, startTime: getStartTime()){
             if shifts.count > 0{
                 shifts.forEach(){(shift :StaffShift) in
                     if checking.id != shift.id{
@@ -246,6 +345,41 @@ struct EventFrameView: View {
                 }
             }
         }
+        
+        // 30分前の枠
+        if let shifts = firestoreData.staffShift.getData(date: self.date, startTime: addMin(to: getStartTime(), by: -30)){
+            if shifts.count > 0{
+                shifts.forEach(){(shift :StaffShift) in
+                    if checking.id != shift.id{
+                        if let reserve = firestoreData.reservation.get(byShiftId: shift.id){
+                            if isMyReserve(reservation: reserve){
+                                counter = counter + 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
+        // 30分後の枠
+        if let shifts = firestoreData.staffShift.getData(date: self.date, startTime: addMin(to: getStartTime(), by: 30)){
+            if shifts.count > 0{
+                shifts.forEach(){(shift :StaffShift) in
+                    if checking.id != shift.id{
+                        if let reserve = firestoreData.reservation.get(byShiftId: shift.id){
+                            if isMyReserve(reservation: reserve){
+                                counter = counter + 1
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
         if counter > 0 {
             return true
         }
@@ -266,8 +400,8 @@ struct EventFrameView: View {
 //        if !firestoreData.ticket.isTicketLeft(){
 //            return showNoTicketAlert()
 //        }
-        switch self.spotState {
-            case .disabled : return deleteReservationAleart()
+        switch getSpotState() {
+            case .disabled : return showErrorAlert()
             case .enabled  : return showReservationAleart()
             case .reserved : return deleteReservationAleart()
             case .conflicted : return showConflictedAleart()
@@ -310,7 +444,7 @@ struct EventFrameView: View {
                 let ticketAfter = ticketBefore - 1
                 let ticketMessage = String(ticketBefore) + " → " + String(ticketAfter)
                 let dateMessage = getFormatedDate(from: self.date)
-                let timeMessage = startTimeLabel + " - " + endTimeLabel
+                let timeMessage = getStartTimeLabel() + " - " + getEndTimeLabel()
                 let instructorName = firestoreData.staff.getStaff(byStaffId: viewRouter.selectedStaffId)?.name ?? ""
                 
                 if ticketBefore < 1{
@@ -330,14 +464,20 @@ struct EventFrameView: View {
                             )
                         )
                 }
-                
-            case .complete :
+            case .reservationComplete :
                 return Alert(
                     title: Text("トレーニングを予約しました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-                        self.spotState = .reserved
+                    })
+                )
+            case .deleteComplete :
+                return Alert(
+                    title: Text("予約を取消しました"),
+                    message:nil,
+                    dismissButton:.default(Text("OK"),action: {
+                        self.alertType = .confirm
                     })
                 )
         case .failed :
@@ -360,76 +500,114 @@ struct EventFrameView: View {
                         .destructive (
                             Text("OK"),
                             action: {
-                                deleteReservationData(with: self.reservation!)
+                                
+                                
+                                let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime)
+                                var reservation : Reservation?
+                                if nil != shift {
+                                    reservation = firestoreData.reservation.get(byShiftId: shift!.id)
+                                }
+                                else{
+                                    // 30分後のシフトがあるか確認
+                                    let shift30af = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: addMin(to: self.startTime, by: 30))
+                                    // あった場合、リザベーションを検索。枠の時間を設定
+                                    if nil != shift30af{
+                                        reservation = firestoreData.reservation.get(byShiftId: shift30af!.id)
+                                    }
+                                }
+                                if nil != reservation{
+                                    deleteReservationData(with: reservation!)
+                                }
                             }
                         )
                     )
-            case .complete :
+            case .reservationComplete :
+                return Alert(
+                    title: Text("トレーニングを予約しました"),
+                    message:nil,
+                    dismissButton:.default(Text("OK"),action: {
+                        self.alertType = .confirm
+                    })
+                )
+            case .deleteComplete :
                 return Alert(
                     title: Text("予約を取消しました"),
                     message:nil,
                     dismissButton:.default(Text("OK"),action: {
                         self.alertType = .confirm
-                        self.spotState = .enabled
                     })
                 )
-        case .failed :
-            return Alert(
-                title: Text("予約の取消に失敗しました"),
-                message: Text("通信環境をお確かめの上、時間を置いて再度実施してください"),
-                dismissButton:.default(Text("OK"),action: {self.alertType = .confirm})
-            )
+            case .failed :
+                return Alert(
+                    title: Text("予約の取消に失敗しました"),
+                    message: Text("通信環境をお確かめの上、時間を置いて再度実施してください"),
+                    dismissButton:.default(Text("OK"),action: {self.alertType = .confirm})
+                )
         }
     }
     private func showConflictedAleart() -> Alert {
         return Alert(
             title: Text("トレーニングの予約に失敗しました"),
             message: Text("このトレーニングは他のお客様に予約されました"),
-            dismissButton:.default(Text("OK"),action: {self.alertType = .confirm})
+            dismissButton:.default(Text("OK"),action: {
+                self.alertType = .confirm
+                self.conflictFlg = false
+            })
         )
     }
     
     private func makeReserVation(){
-        if nil == self.reservation {
+        if let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: getStartTime()){
             self.reservation = Reservation()
-            self.reservation!.shiftId = self.shift!.id
+            self.reservation!.shiftId = shift.id
             self.reservation!.customerId = viewRouter.loginCustomerId
+            self.reservation!.startTime = getStartTime()
             
-            print("saving reservation : \(self.reservation!)")
+//                print("saving reservation : \(self.reservation!)")
 //            ReservationDao.save(reserv:self.reservation!)
             saveReservationData(with: self.reservation!)
-        }
-        else { // すでに
-//            ReservationDao.update(reserv:self.reservation!)
-            saveReservationData(with: self.reservation!)
+//            if nil == self.reservation {
+//                self.reservation = Reservation()
+//                self.reservation!.shiftId = shift.id
+//                self.reservation!.customerId = viewRouter.loginCustomerId
+//                self.reservation!.startTime = getStartTime()
+//
+////                print("saving reservation : \(self.reservation!)")
+//    //            ReservationDao.save(reserv:self.reservation!)
+//                saveReservationData(with: self.reservation!)
+//            }
+//            else { // すでに
+//    //            ReservationDao.update(reserv:self.reservation!)
+//                print(self.reservation!)
+//                saveReservationData(with: self.reservation!)
+//            }
         }
     }
     
     private func checkSimutaneousReservation(){
         gcp.show(message: "Loading...", style: ProgressCircleStyle())
-        if nil != self.shift{
+        let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: getStartTime())
+        if nil != shift{
             let db = Firestore.firestore()
             let settings = FirestoreSettings()
             settings.isPersistenceEnabled = false
             db.settings = settings
             
             db.collection("50_RESERVATION")
-                .whereField("10_SHIFT_ID", isEqualTo: self.shift!.id)
+                .whereField("10_SHIFT_ID", isEqualTo: shift!.id)
                 .whereField("99_DELETE_FLG",isEqualTo: 0)
                 .getDocuments() { (querySnapshot, err) in
                     if let err = err {
                         gcp.dismiss()
                         self.alertType = .failed
-                        self.spotState = .disabled
-                        print(err)
+//                        print(err)
                     } else {
-                        print("reserving :  \(self.shift!.id)")
                         if (querySnapshot!.documents.count > 0){
                             gcp.dismiss()
                             self.alertType = .failed
-                            self.spotState = .conflicted
+                            self.conflictFlg = true
                             self.reservationAlert.toggle()
-                            print("競合が発生したため、書き込みを終了")
+//                            print("競合が発生したため、書き込みを終了")
                         }
                         else{
                             makeReserVation()
@@ -438,7 +616,6 @@ struct EventFrameView: View {
             }
         }
         else{
-            self.spotState = .disabled
             self.alertType = .failed
             self.reservationAlert.toggle()
         }
@@ -474,7 +651,7 @@ struct EventFrameView: View {
         batch.commit(){ err in
             if let err = err {
                 gcp.dismiss()
-                print("Error writing reservation :  \(err)")
+//                print("Error writing reservation :  \(err)")
                 self.alertType = .failed
                 self.reservationAlert.toggle()
             }
@@ -491,8 +668,7 @@ struct EventFrameView: View {
                 newData.deleteFlg  = with.deleteFlg
                 firestoreData.reservation.entities.append(newData);
                 firestoreData.ticket.entity.ticketLeft = firestoreData.ticket.entity.ticketLeft - 1
-                self.alertType = .complete
-                self.spotState = .enabled
+                self.alertType = .reservationComplete
                 self.reservationAlert.toggle()
             }
         }
@@ -528,9 +704,8 @@ struct EventFrameView: View {
         
         batch.commit(){ err in
             if let err = err {
-                print("Error writing reservation :  \(err)")
+//                print("Error writing reservation :  \(err)")
                 gcp.dismiss()
-                self.spotState = .reserved
                 self.alertType = .failed
                 self.reservationAlert.toggle()
             }
@@ -547,13 +722,12 @@ struct EventFrameView: View {
                 newData.deleteFlg  = with.deleteFlg
                 
                 firestoreData.ticket.entity.ticketLeft = firestoreData.ticket.entity.ticketLeft + 1
-                self.spotState = .reserved
-                self.alertType = .complete
+                self.alertType = .deleteComplete
                 self.reservationAlert.toggle()
                 
                 for i in 0..<firestoreData.reservation.entities.count{
                     if with.id == firestoreData.reservation.entities[i].id{
-                        firestoreData.reservation.entities.remove(at: i)
+                        firestoreData.reservation.entities[i].deleteFlg = 1
                         break
                     }
                 }
