@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		8750C7C626A3D4F700C66D50 /* CustomerTicketViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8750C7C526A3D4F700C66D50 /* CustomerTicketViewModel.swift */; };
 		8750C7C826A4507F00C66D50 /* CustomerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8750C7C726A4507F00C66D50 /* CustomerViewModel.swift */; };
+		875A0F5E274A474C0099BD1E /* RealmMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875A0F5D274A474C0099BD1E /* RealmMigrator.swift */; };
+		875A0F60274A479D0099BD1E /* BasicConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875A0F5F274A479D0099BD1E /* BasicConfigs.swift */; };
+		875A0F62274A486D0099BD1E /* BasicConfigDao.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875A0F61274A486D0099BD1E /* BasicConfigDao.swift */; };
+		875A0F64274A4B0D0099BD1E /* CheckBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875A0F63274A4B0D0099BD1E /* CheckBoxView.swift */; };
 		876DCC56267B44B6008E2B0C /* WeekRangeControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 876DCC55267B44B6008E2B0C /* WeekRangeControllerView.swift */; };
 		87746A95266FD0A1003C9DF9 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 87746A94266FD0A1003C9DF9 /* Colors.xcassets */; };
 		87746A98266FD16C003C9DF9 /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87746A97266FD16C003C9DF9 /* ColorManager.swift */; };
@@ -27,6 +31,9 @@
 		87868D6C26B820BF0068EB3A /* ListRowCustomer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87868D6B26B820BF0068EB3A /* ListRowCustomer.swift */; };
 		87868D6E26B958210068EB3A /* ListRowProgram.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87868D6D26B958210068EB3A /* ListRowProgram.swift */; };
 		87868D7026B958B80068EB3A /* ProgramPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87868D6F26B958B80068EB3A /* ProgramPickerView.swift */; };
+		8787A133274D237D003F87C6 /* ReservationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8787A132274D237D003F87C6 /* ReservationDetailView.swift */; };
+		8787A135274D23B7003F87C6 /* ReservationSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8787A134274D23B7003F87C6 /* ReservationSummaryView.swift */; };
+		8787A137274D3595003F87C6 /* ReservationDetailContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8787A136274D3595003F87C6 /* ReservationDetailContainerView.swift */; };
 		879C001726992401009E2537 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 879C001626992401009E2537 /* GoogleService-Info.plist */; };
 		879C001C269E6908009E2537 /* ProgressCircleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 879C001B269E6908009E2537 /* ProgressCircleStyle.swift */; };
 		879C001E26A2D331009E2537 /* StaffShiftViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 879C001D26A2D331009E2537 /* StaffShiftViewModel.swift */; };
@@ -73,6 +80,10 @@
 		704F0A2C30CCB9695168CA04 /* Pods-app.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-app.debug.xcconfig"; path = "Target Support Files/Pods-app/Pods-app.debug.xcconfig"; sourceTree = "<group>"; };
 		8750C7C526A3D4F700C66D50 /* CustomerTicketViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerTicketViewModel.swift; sourceTree = "<group>"; };
 		8750C7C726A4507F00C66D50 /* CustomerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerViewModel.swift; sourceTree = "<group>"; };
+		875A0F5D274A474C0099BD1E /* RealmMigrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RealmMigrator.swift; path = ../../../../RealmMigrator.swift; sourceTree = "<group>"; };
+		875A0F5F274A479D0099BD1E /* BasicConfigs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicConfigs.swift; sourceTree = "<group>"; };
+		875A0F61274A486D0099BD1E /* BasicConfigDao.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicConfigDao.swift; sourceTree = "<group>"; };
+		875A0F63274A4B0D0099BD1E /* CheckBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBoxView.swift; sourceTree = "<group>"; };
 		876DCC55267B44B6008E2B0C /* WeekRangeControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekRangeControllerView.swift; sourceTree = "<group>"; };
 		87746A94266FD0A1003C9DF9 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		87746A97266FD16C003C9DF9 /* ColorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorManager.swift; sourceTree = "<group>"; };
@@ -91,6 +102,9 @@
 		87868D6B26B820BF0068EB3A /* ListRowCustomer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRowCustomer.swift; sourceTree = "<group>"; };
 		87868D6D26B958210068EB3A /* ListRowProgram.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRowProgram.swift; sourceTree = "<group>"; };
 		87868D6F26B958B80068EB3A /* ProgramPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgramPickerView.swift; sourceTree = "<group>"; };
+		8787A132274D237D003F87C6 /* ReservationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationDetailView.swift; sourceTree = "<group>"; };
+		8787A134274D23B7003F87C6 /* ReservationSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationSummaryView.swift; sourceTree = "<group>"; };
+		8787A136274D3595003F87C6 /* ReservationDetailContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationDetailContainerView.swift; sourceTree = "<group>"; };
 		879C001626992401009E2537 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		879C001B269E6908009E2537 /* ProgressCircleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCircleStyle.swift; sourceTree = "<group>"; };
 		879C001D26A2D331009E2537 /* StaffShiftViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaffShiftViewModel.swift; sourceTree = "<group>"; };
@@ -191,6 +205,16 @@
 			path = CustomerManagement;
 			sourceTree = "<group>";
 		};
+		8787A131274D22A1003F87C6 /* ReserveStatus */ = {
+			isa = PBXGroup;
+			children = (
+				8787A132274D237D003F87C6 /* ReservationDetailView.swift */,
+				8787A134274D23B7003F87C6 /* ReservationSummaryView.swift */,
+				8787A136274D3595003F87C6 /* ReservationDetailContainerView.swift */,
+			);
+			path = ReserveStatus;
+			sourceTree = "<group>";
+		};
 		879C001A269E68CB009E2537 /* ProgressCircle */ = {
 			isa = PBXGroup;
 			children = (
@@ -263,6 +287,8 @@
 				87B13B7B26738DCF0031A94E /* StaffShift.swift */,
 				87B13B9C267A0CE20031A94E /* CustomerTicket.swift */,
 				87868D6026B662110068EB3A /* Program.swift */,
+				875A0F5D274A474C0099BD1E /* RealmMigrator.swift */,
+				875A0F5F274A479D0099BD1E /* BasicConfigs.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -275,6 +301,7 @@
 				87B13B7D26738FD80031A94E /* ReservationDao.swift */,
 				87B13B7F2673904A0031A94E /* StaffShiftDao.swift */,
 				87B1899E267CDC9F00A88434 /* CustomerTicketDao.swift */,
+				875A0F61274A486D0099BD1E /* BasicConfigDao.swift */,
 			);
 			path = Dao;
 			sourceTree = "<group>";
@@ -282,6 +309,7 @@
 		879E9FE4266FC3FF0036E89C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8787A131274D22A1003F87C6 /* ReserveStatus */,
 				87868D6226B768690068EB3A /* CustomerManagement */,
 				87B13B8D2677A9690031A94E /* StaffManagement */,
 				87B13B6C26724C4F0031A94E /* ViewComponents */,
@@ -325,6 +353,7 @@
 				87746A9A266FDBEC003C9DF9 /* FatTextFieldStyle.swift */,
 				87B13B6D26724CB90031A94E /* SideMenuView.swift */,
 				87B13B942677B0730031A94E /* FAB.swift */,
+				875A0F63274A4B0D0099BD1E /* CheckBoxView.swift */,
 			);
 			path = ViewComponents;
 			sourceTree = "<group>";
@@ -509,8 +538,11 @@
 				87746AA926711B22003C9DF9 /* Helper.swift in Sources */,
 				87B13B772672F0EA0031A94E /* Reservation.swift in Sources */,
 				87868D6426B817950068EB3A /* ProgramsViewModel.swift in Sources */,
+				8787A135274D23B7003F87C6 /* ReservationSummaryView.swift in Sources */,
+				875A0F5E274A474C0099BD1E /* RealmMigrator.swift in Sources */,
 				87B13B932677A9CD0031A94E /* EditStaffView.swift in Sources */,
 				87746AA52670FCE3003C9DF9 /* MainView.swift in Sources */,
+				875A0F64274A4B0D0099BD1E /* CheckBoxView.swift in Sources */,
 				87746AA32670FCAC003C9DF9 /* CalendarView.swift in Sources */,
 				87B13B8A2676170F0031A94E /* DateHelper.swift in Sources */,
 				87B13B802673904A0031A94E /* StaffShiftDao.swift in Sources */,
@@ -522,10 +554,12 @@
 				879C002026A2DA72009E2537 /* FirestoreDataRepository.swift in Sources */,
 				87746AA726711A4F003C9DF9 /* ViewRouter.swift in Sources */,
 				87868D6626B81B170068EB3A /* CustomerListView.swift in Sources */,
+				8787A137274D3595003F87C6 /* ReservationDetailContainerView.swift in Sources */,
 				87B13B72267274630031A94E /* EventRectView.swift in Sources */,
 				87B13B842674DA800031A94E /* DayRectView.swift in Sources */,
 				8750C7C626A3D4F700C66D50 /* CustomerTicketViewModel.swift in Sources */,
 				876DCC56267B44B6008E2B0C /* WeekRangeControllerView.swift in Sources */,
+				875A0F60274A479D0099BD1E /* BasicConfigs.swift in Sources */,
 				87B13B912677A9B50031A94E /* CreateStaffView.swift in Sources */,
 				87B13B7A267388D10031A94E /* Constant.swift in Sources */,
 				87868D6C26B820BF0068EB3A /* ListRowCustomer.swift in Sources */,
@@ -537,9 +571,11 @@
 				87B13B9B2678DDA80031A94E /* StaffPickerView.swift in Sources */,
 				87B13B822673BABD0031A94E /* AlertHelper.swift in Sources */,
 				879E9FE3266FBFFA0036E89C /* StaffDao.swift in Sources */,
+				875A0F62274A486D0099BD1E /* BasicConfigDao.swift in Sources */,
 				87746A9F2670F123003C9DF9 /* CustomerDao.swift in Sources */,
 				8750C7C826A4507F00C66D50 /* CustomerViewModel.swift in Sources */,
 				879E9FCA266FB9180036E89C /* ContentView.swift in Sources */,
+				8787A133274D237D003F87C6 /* ReservationDetailView.swift in Sources */,
 				879E9FE9266FC9940036E89C /* LoginView.swift in Sources */,
 				87746A9D2670F0D4003C9DF9 /* Customer.swift in Sources */,
 				87B13B8C2676350F0031A94E /* CalendarTimeLabel.swift in Sources */,

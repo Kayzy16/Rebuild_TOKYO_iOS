@@ -42,6 +42,8 @@ class StaffShiftViewModel : ObservableObject {
                     staffShift.updateDate   = (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue()
                     
                     staffShift.deleteFlg    = data["99_DELETE_FLG"] as? Int ?? 0
+                    
+                    
                     return staffShift
                 }
             }
@@ -70,7 +72,7 @@ class StaffShiftViewModel : ObservableObject {
             "40_START_TIME" : Timestamp(date:with.startTime),
             "50_SEQ"        : with.seq,
             "70_CREATE_DATE": Timestamp(date:with.createDate),
-            "80_UPDATE_DATE": Timestamp(date:with.updateDate),
+            "80_UPDATE_DATE": Timestamp(date:Date()),
             "99_DELETE_FLG" : 1
         ],merge: true){ error in
             if let error = error {
@@ -133,5 +135,16 @@ class StaffShiftViewModel : ObservableObject {
             }
         }
         return result
+    }
+    
+    func getStaffId(shiftId:String) -> String? {
+        if(entities.count > 0){
+            for shift in entities {
+                if(shift.id == shiftId){
+                    return shift.staffId
+                }
+            }
+        }
+        return nil
     }
 }

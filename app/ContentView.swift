@@ -13,6 +13,10 @@ struct ContentView: View {
     @EnvironmentObject var viewRouter: ViewRouter
     @EnvironmentObject var firestoreData : FirestoreDataRepository
     
+    init(){
+        UITabBar.appearance().backgroundColor = UIColor.systemBackground
+    }
+    
     var body: some View {
         switch viewRouter.currentPage {
         case .auth:

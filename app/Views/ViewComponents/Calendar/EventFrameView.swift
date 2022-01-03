@@ -15,8 +15,8 @@ struct EventFrameView: View {
     @EnvironmentObject var firestoreData : FirestoreDataRepository
     var gcp = GradientCircularProgress()
     
-    var date : Date
-    var startTime : Date
+    @Binding var date : Date
+    @Binding var startTime : Date
 //    @State var startTime30minAfter : Bool = false
     @State var startTimeLabel : String = ""
     @State var endTimeLabel : String = ""
@@ -90,14 +90,6 @@ struct EventFrameView: View {
             }
             .frame(width: CGFloat(event_frame_width), height: CGFloat(event_frame_height/2))
             .onAppear{
-                
-//                if(viewRouter.selectedStaffId.isEmpty){
-//                    if firestoreData.staff.entities.count>0{
-//                        viewRouter.selectedStaffId = firestoreData.staff.entities[0].id
-//                    }
-//                }
-//                self.shift = nil
-//                self.startTime30minAfter = false
                 let shift = firestoreData.staffShift.getData(staffId: viewRouter.selectedStaffId, date: self.date, startTime: self.startTime)
                 if nil != shift {
                     self.reservation = firestoreData.reservation.get(byShiftId: shift!.id)
@@ -148,7 +140,7 @@ struct EventFrameView: View {
 //                    .frame(height:CGFloat(event_frame_height*0.1))
                     
                     // シフト枠1
-                    EventRectView(date: self.date, startTime: self.startTime, seq: 0)
+                    EventRectView(date: self.$date, startTime: self.$startTime, seq: .constant(0))
                     .environmentObject(firestoreData)
                     Spacer()
                     
@@ -171,7 +163,7 @@ struct EventFrameView: View {
                     }
                     .frame(height:CGFloat(event_frame_height*0.1))
 
-                    EventRectView(date: self.date, startTime: addMin(to: self.startTime, by: 30), seq: 0)
+                    EventRectView(date: self.$date, startTime: .constant(addMin(to: self.startTime, by: 30)), seq: .constant(0))
                     .environmentObject(firestoreData)
                     Spacer()
 //                    ForEach(0..<max_reservable_spot){ i in

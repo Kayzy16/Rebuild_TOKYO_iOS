@@ -15,6 +15,11 @@ struct ListRowStaff: View {
     }
     
     var body: some View {
-        Text(staff.name)
+        HStack {
+            Text(staff.name)
+            Spacer()
+        }
+        .frame(maxWidth:.infinity)
+        .contentShape(Rectangle())
     }
 }

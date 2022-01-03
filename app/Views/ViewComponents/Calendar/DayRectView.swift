@@ -42,13 +42,13 @@ struct DayRectView: View {
     
     private func getWeekDaylabel(weekDay : Int) -> String {
         switch weekDay {
-        case WeekDay.sunday.rawValue : return "Sun"
-        case WeekDay.monday.rawValue : return "Mon"
-        case WeekDay.tuesday.rawValue : return "Tue"
-        case WeekDay.wednesday.rawValue : return "Wed"
-        case WeekDay.thursday.rawValue : return "Thu"
-        case WeekDay.friday.rawValue : return "Fri"
-        case WeekDay.saturday.rawValue : return "Sat"
+        case WeekDay.sunday.rawValue : return "日"
+        case WeekDay.monday.rawValue : return "月"
+        case WeekDay.tuesday.rawValue : return "火"
+        case WeekDay.wednesday.rawValue : return "水"
+        case WeekDay.thursday.rawValue : return "木"
+        case WeekDay.friday.rawValue : return "金"
+        case WeekDay.saturday.rawValue : return "土"
         
         default:
             return "err"

@@ -11,6 +11,7 @@ struct MainView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewRouter : ViewRouter
     @EnvironmentObject var firestoreData : FirestoreDataRepository
+    @State private var selectedTab  = 1
     
 //    let staffList = StaffDao.getAll()
     @State private var selectedStaff : Staff?
@@ -24,7 +25,7 @@ struct MainView: View {
                         ZStack{
                             Image("headerBackground")
                             VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/){
-                                Text("Reserve your lesson")
+                                Text(selectedTab == 0 ? "Confirm your trainig" : "Reserve your trainig")
                                     .foregroundColor(.white)
                                 
                                 if(connected_environment != "PROD"){
@@ -34,40 +35,39 @@ struct MainView: View {
                             }
                         }
                         .padding(.top)
-                        
                         if viewRouter.loginUserType == .customer {
-                            NavigationLink(destination: StaffPickerView(selectedStaff: $selectedStaff)){
-                                ZStack(alignment:.center){
-                                    
-                                    Rectangle()
-                                        .fill(ColorManager.darkOrage)
-                                        .frame(height: 40)
-                                    
-                                    Text(selectedStaff?.name ?? "select your trainer")
-                                        .frame(height: 40)
-                                        .foregroundColor(.white)
-                                }
+                            
+                            TabView(selection:$selectedTab) {
+                                
+                                
+                                ReservationSummaryView()
+                                    .environmentObject(firestoreData)
+                                    .environmentObject(viewRouter)
+                                    .tabItem {
+                                        VStack{
+                                            Image(systemName: "person")
+                                            Text("STATUS")
+                                        }
+                                    }.tag(0)
+                                
+                                
+                                CustomerCalendarView(selectedStaff: self.$selectedStaff)
+                                    .environmentObject(viewRouter)
+                                    .environmentObject(firestoreData)
+                                    .tabItem {
+                                        VStack{
+                                            Image(systemName: "calendar")
+                                            Text("RESERVE")
+                                        }
+                                    }.tag(1)
+                                
+                                
+                                
+                                
                             }
-                            .onAppear{
-                                if viewRouter.selectedStaffId.isEmpty{
-                                    selectedStaff = nil
-                                }
-//                                if nil == selectedStaff{
-//                                    if !firestoreData.staff.entities.isEmpty{
-//                                        selectedStaff = firestoreData.staff.entities[0]
-//                                    }
-//                                }
-                            }
-                            .padding()
-                        }
-                        else{
-                            EmptyView()
-                        }
-                        
-                        
-                        CalendarView()
-                            .environmentObject(viewRouter)
-                            .environmentObject(firestoreData)
+                            .accentColor(ColorManager.accentOrage)
+//                            .disabled(viewRouter.sideMenuState == .isVisible ? true : false)
+                            .tabViewStyle(DefaultTabViewStyle())
                             .navigationBarTitleDisplayMode(.inline)
                             .navigationBarItems(
                                 leading:
@@ -81,6 +81,26 @@ struct MainView: View {
                                             .imageScale(.large)
                                     }
                             )
+                            
+                        }
+                        else{
+                            CalendarView()
+                                .environmentObject(viewRouter)
+                                .environmentObject(firestoreData)
+                                .navigationBarTitleDisplayMode(.inline)
+                                .navigationBarItems(
+                                    leading:
+                                        Button(
+                                            action:{
+                                                withAnimation {
+                                                    viewRouter.sideMenuState = .isVisible
+                                                }
+                                            }){
+                                            Image(systemName: "line.horizontal.3")
+                                                .imageScale(.large)
+                                        }
+                                )
+                        }
                         Spacer()
                     }
                 }
@@ -122,11 +142,58 @@ struct MainView: View {
     }
 }
 
+struct CustomerCalendarView : View {
+    
+    @Binding var selectedStaff : Staff?
+    @EnvironmentObject var viewRouter : ViewRouter
+    @EnvironmentObject var firestoreData : FirestoreDataRepository
+    
+    var body: some View {
+        
+        VStack {
+            NavigationLink(destination: StaffPickerView(selectedStaff: $selectedStaff)){
+                ZStack(alignment:.center){
+                    
+                    Rectangle()
+                        .fill(ColorManager.darkOrage)
+                        .frame(height: 40)
+                    
+                    Text(selectedStaff?.name ?? "select your trainer")
+                        .frame(height: 40)
+                        .foregroundColor(.white)
+                }
+            }
+            .onAppear{
+                if viewRouter.selectedStaffId.isEmpty{
+                    selectedStaff = nil
+                }
+            }
+            .padding()
+            
+            
+            CalendarView()
+                .environmentObject(viewRouter)
+                .environmentObject(firestoreData)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(
+                    leading:
+                        Button(
+                            action:{
+                                withAnimation {
+                                    viewRouter.sideMenuState = .isVisible
+                                }
+                            }){
+                            Image(systemName: "line.horizontal.3")
+                                .imageScale(.large)
+                        }
+                )
+        }
+    }
+}
+
+
 struct MainView_Previews: PreviewProvider {
-
     static var previews: some View {
-
-
         MainView().environmentObject(ViewRouter())
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 import FirebaseFirestore
 import GradientCircularProgress
 
+
 struct EventRectView: View {
     
     @State var reservationAlert = false
@@ -16,9 +17,9 @@ struct EventRectView: View {
     @State var shift : StaffShift?
     @State var reservation : Reservation?
     
-    var date : Date
-    var startTime : Date
-    var seq : Int
+    @Binding var date : Date
+    @Binding var startTime : Date
+    @Binding var seq : Int
     
     @EnvironmentObject var viewRouter: ViewRouter
     @EnvironmentObject var firestoreData : FirestoreDataRepository
@@ -40,15 +41,6 @@ struct EventRectView: View {
         case reserved
         case passed
     }
-    
-    
-    init(date:Date,startTime:Date,seq:Int){
-        self.date = date
-        self.startTime = startTime
-        self.seq = seq
-    }
-    
-    
     
     var body: some View {        
         VStack {
@@ -98,7 +90,9 @@ struct EventRectView: View {
         .background(getSpotColorByState())
         .shadow(color: .gray, radius: 3, x: 2, y: 2)
         .onTapGesture {
-            print(getSpotState())
+            print("date : \(date)")
+            print("startTime : \(startTime)")
+            self.shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
             if getSpotState() == .initial || getSpotState() == .enabled || getSpotState() == .occupied{
                 reservationAlert.toggle()
             }
@@ -107,7 +101,7 @@ struct EventRectView: View {
             getAlertByState()
         }
         .onAppear{
-//            self.shift = StaffShiftDao.get(date: date, startTime: startTime, seq: seq)
+            self.shift = nil
             self.shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
             if nil != self.shift {
                 self.reservation = firestoreData.reservation.get(byShiftId: self.shift!.id)
@@ -123,6 +117,7 @@ struct EventRectView: View {
             if nil != shift {
                 let reservation = firestoreData.reservation.get(byShiftId: shift!.id)
                 let name = firestoreData.customer.getName(byCustomerId: reservation!.customerId) ?? ""
+                
                 return name
             }
         }
@@ -141,11 +136,37 @@ struct EventRectView: View {
 //            return .disabled
 //        }
         
+        
         // シフトと予約を取得
         let shiftfromFirestore = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
         
+        // デバッグ用
+//        print("date : \(date)")
+//        print("startTime : \(startTime)")
+//        print("seq : \(seq)")
+//        print("shiftfromFirestore : \(shiftfromFirestore)")
+        // デバッグ用
+//        let year = getYearInt(from: shiftfromFirestore?.startTime ?? Date())
+//        let month = getMonthInt(from: shiftfromFirestore?.startTime ?? Date())
+//        let day = getDayInt(from: shiftfromFirestore?.startTime ?? Date())
+//
+//        if(year == 2021){
+//            if(month == 11){
+//                if(day == 25){
+//
+//                    print(shiftfromFirestore)
+//
+//                }
+//            }
+//        }
+        
+        
+        
         // シフトデータあり
         if nil != shiftfromFirestore {
+            
+            
+            
             // 顧客による予約データあり
             if isReserved(shift: shiftfromFirestore!){
                 return .reserved
@@ -398,10 +419,10 @@ struct EventRectView: View {
                 for i in 0..<firestoreData.staffShift.entities.count{
                     if with.id == firestoreData.staffShift.entities[i].id{
                         firestoreData.staffShift.entities[i].deleteFlg = 1
-                        self.shift = nil
                         break
                     }
                 }
+                self.shift = nil
                 gcp.dismiss()
                 self.alertType = .complete
                 self.reservationAlert.toggle()
@@ -423,7 +444,10 @@ struct EventRectView: View {
 //            saveData(with: self.shift!)
             checkSimutaneousAssign(with: self.shift!)
         }
+        
+        // 修正中
         else {
+            print(shift!)
             self.shift!.staffId = viewRouter.loginStaffId
             self.shift!.startDate = date
             self.shift!.endDate = date
@@ -513,8 +537,8 @@ struct EventRectView: View {
     }
 }
 
-struct EventRectView_Previews: PreviewProvider {
-    static var previews: some View {
-        EventRectView(date: Date(), startTime: Date(), seq: 0).environmentObject(ViewRouter())
-    }
-}
+//struct EventRectView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        EventRectView(date: Date(), startTime: Date(), seq: 0).environmentObject(ViewRouter())
+//    }
+//}

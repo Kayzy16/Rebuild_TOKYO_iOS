@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CalendarGridView: View {
     
-    let weekStartDay : Date
+    @Binding var weekStartDay : Date
     @EnvironmentObject var viewRouter: ViewRouter
     @EnvironmentObject var firestoreData : FirestoreDataRepository
     
@@ -25,7 +25,7 @@ struct CalendarGridView: View {
             ScrollView(.vertical, showsIndicators: false, content: {
                 HStack{
                     ForEach(0..<3){ i in
-                        CalendarDayView(day: getFutureDate(from: weekStartDay, offset: i))
+                        CalendarDayView(day: .constant(getFutureDate(from: weekStartDay, offset: i)))
                             .environmentObject(firestoreData)
                     }
                 }
@@ -40,6 +40,6 @@ struct CalendarGridView: View {
 struct CalendarGridView_Previews: PreviewProvider {
     static var previews: some View {
         let d = Date()
-        CalendarGridView(weekStartDay: d).environmentObject(ViewRouter())
+        CalendarGridView(weekStartDay: .constant(d)).environmentObject(ViewRouter())
     }
 }

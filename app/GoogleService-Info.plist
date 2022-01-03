@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>382237920937-30h105ig1a5ebj8ul0pik1q4ini0hor7.apps.googleusercontent.com</string>
+	<string>653152036271-stoura4bv50pmkp00mhbo8fseaak0ldm.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.382237920937-30h105ig1a5ebj8ul0pik1q4ini0hor7</string>
+	<string>com.googleusercontent.apps.653152036271-stoura4bv50pmkp00mhbo8fseaak0ldm</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBV-GWERWjm0HVCF49nW9O_tYfZ8MapBXo</string>
+	<string>AIzaSyD1yjcxLAjDps664eK1U9ILcY6IaXv4IUw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>382237920937</string>
+	<string>653152036271</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.rebuild-tokyo.app</string>
 	<key>PROJECT_ID</key>
-	<string>re-build-tokyo-stg</string>
+	<string>rebuild-tokyo-stg</string>
 	<key>STORAGE_BUCKET</key>
-	<string>re-build-tokyo-stg.appspot.com</string>
+	<string>rebuild-tokyo-stg.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:382237920937:ios:27b75a7ef85649786263b8</string>
+	<string>1:653152036271:ios:4845068974dc23a4c77b5a</string>
 </dict>
 </plist>

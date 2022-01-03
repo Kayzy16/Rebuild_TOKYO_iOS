@@ -23,6 +23,9 @@ struct LoginView: View {
     @State private var login_user_type = 0
     @State private var error_msg = "メールアドレス、またはパスワードが誤っています"
     
+    // パスワード記憶用のチェックボックス
+    @State private var checked = false
+    
     @EnvironmentObject var viewRouter: ViewRouter
     
     var gcp = GradientCircularProgress()
@@ -80,6 +83,10 @@ struct LoginView: View {
                             .transition(.opacity)
                         
                         
+                        CheckBoxView(checked: $checked)
+                            .frame(width : 300,height: 50)
+                            .padding(.bottom)
+                        
                         
                         Button(action: {tryLogin()})
                         {
@@ -102,6 +109,8 @@ struct LoginView: View {
                         self.loadingComp.toggle()
                     }
                 }
+                
+                fillIdAndPw()
             }
         }
     }
@@ -116,10 +125,37 @@ struct LoginView: View {
                 gcp.dismiss()
             }
             else{
+                saveIdAndPw()
                 getSystemMasterData()
                 firestoreData.fetchData()
             }
         }
+    }
+    
+    private func fillIdAndPw(){
+        let config = BasicConfigDao.get()
+        if(config.rememberPW != 0){
+            self.checked = true
+            self.mail = config.mail
+            self.password = config.password
+        }
+    }
+    
+    private func saveIdAndPw(){
+        let configs = BasicConfigs()
+        if(checked){
+            configs.rememberPW = 1
+            configs.mail = mail
+            configs.password = password
+        }
+        else{
+            configs.rememberPW = 0
+            configs.mail = ""
+            configs.password = ""
+        }
+        configs.defaultTraner = ""
+        BasicConfigDao.update(with: configs)
+        
     }
     
     private func finishAuth(){
@@ -162,6 +198,7 @@ struct LoginView: View {
                 } else {
                     viewRouter.loginUserType = .customer
                     viewRouter.loginCustomerId = user.uid
+                    firestoreData.reservation.fetchUsersHistory(id: user.uid)
                     checkCustomerState()
                 }
             }

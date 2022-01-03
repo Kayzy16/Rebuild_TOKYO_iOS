@@ -11,6 +11,7 @@ import FirebaseFirestore
 class ReservationViewModel : ObservableObject {
     private var db = Firestore.firestore()
     @Published var entities : [Reservation] = []
+    @Published var usersReservation :[Reservation] = []
     
     init(){
         let settings = FirestoreSettings()
@@ -47,6 +48,41 @@ class ReservationViewModel : ObservableObject {
                 }
             }
         }
+    }
+    
+    func fetchUsersHistory(id:String){
+        DispatchQueue.global().async {
+            
+            self.db.collection("50_RESERVATION")
+                .whereField("20_CUSTOMER_ID", isEqualTo: id)
+                .addSnapshotListener{ (QuerySnapshot, error) in
+                guard let documents = QuerySnapshot?.documents else {
+//                    print("can_not get reserva data from firestore")
+                    return
+                }
+                
+                self.usersReservation = documents.map { QueryDocumentSnapshot -> Reservation in
+                    let reservation = Reservation()
+                    let data = QueryDocumentSnapshot.data()
+                    
+                    reservation.id           = QueryDocumentSnapshot.documentID
+                    reservation.shiftId      = data["10_SHIFT_ID"] as? String ?? ""
+                    reservation.customerId   = data["20_CUSTOMER_ID"] as? String ?? ""
+                    reservation.startTime    = (data["30_START_TIME"] as? Timestamp)!.dateValue()
+                    reservation.createDate   = (data["70_CREATE_DATE"] as? Timestamp)!.dateValue()
+                    reservation.updateDate   = (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue()
+                    reservation.deleteFlg    = data["99_DELETE_FLG"] as? Int ?? 0
+                    
+//                    print("reservation data : \(reservation)")
+                    
+                    return reservation
+                }
+            }
+        }
+    }
+    
+    func getFirst(){
+        
     }
     
     func get(byShiftId:String) -> Reservation?{

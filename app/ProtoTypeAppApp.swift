@@ -23,6 +23,9 @@ struct ProtoTypeAppApp: App {
     init(){
         // initial configuration of Firebase
         FirebaseApp.configure()
+        
+        // realm swift settings
+        RealmMigrator.setDefaultConfiguration()
     }
     
     

@@ -87,7 +87,7 @@ struct CalendarView: View {
                     }
                 }
                 .padding(.bottom)
-                CalendarGridView(weekStartDay: startDay)
+                CalendarGridView(weekStartDay: $startDay)
                     .environmentObject(firestoreData)
                 
             }
