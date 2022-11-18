@@ -192,7 +192,20 @@ struct LoginView: View {
             
             docRef.getDocument { (document, error) in
                 if let document = document, document.exists {
-                    viewRouter.loginUserType = .staff
+                    
+                    let data = document.data()
+                    let authLevel = data?["30_AUTH_LEVEL"] as? Int ?? -1
+                    
+                    if(authLevel == 20){
+                        viewRouter.loginUserType = .adm
+                    }
+                    else if(authLevel == 30){
+                        viewRouter.loginUserType = .trainer
+                    }
+                    else{
+                        viewRouter.loginUserType = .staff
+                    }
+//                    viewRouter.loginUserType = .staff
                     viewRouter.loginStaffId = user.uid
                     finishAuth()
                 } else {

@@ -50,6 +50,7 @@ class StaffViewModel:ObservableObject {
                     let id = QueryDocumentSnapshot.documentID
                     let name = data["10_NAME"] as? String ?? ""
                     let email = data["20_EMAIL"] as? String ?? ""
+                    let auth = data["30_AUTH_LEVEL"] as? Int ?? -1
                     let createDate = (data["70_CREATE_DATE"] as? Timestamp)!.dateValue()
                     let updateDate = (data["80_UPDATE_DATE"] as? Timestamp)!.dateValue()
                     let deleteFlg  = data["99_DELETE_FLG"] as? Int ?? 0
@@ -58,6 +59,7 @@ class StaffViewModel:ObservableObject {
                     staff.id = id
                     staff.name = name
                     staff.mail = email
+                    staff.authLevel = auth
                     staff.createDate = createDate
                     staff.updateDate = updateDate
                     staff.deleteFlg = deleteFlg

@@ -11,12 +11,12 @@ import GradientCircularProgress
 
 public struct ProgressCircleStyle : StyleProperty {
     // Progress Size
-   public var progressSize: CGFloat = 260
+   public var progressSize: CGFloat = 180
    
    // Gradient Circular
-   public var arcLineWidth: CGFloat = 2.0
-   public var startArcColor: UIColor = ColorUtil.toUIColor(r: 0.0, g: 122.0, b: 255.0, a: 1.0)
-   public var endArcColor: UIColor = UIColor.cyan
+   public var arcLineWidth: CGFloat  = 4.0
+   public var startArcColor: UIColor = ColorUtil.toUIColor(r: 255.0, g: 119.0, b: 3.0, a: 1.0)
+   public var endArcColor: UIColor   = ColorUtil.toUIColor(r: 228.0, g: 73.0, b: 28.0, a: 1.0)
    
    // Base Circular
    public var baseLineWidth: CGFloat? = 5.0

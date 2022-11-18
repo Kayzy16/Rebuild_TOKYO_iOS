@@ -46,6 +46,7 @@ class StaffShiftViewModel : ObservableObject {
                     
                     return staffShift
                 }
+                    print(self.entities)
             }
         }
     }

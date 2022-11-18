@@ -19,6 +19,7 @@ enum SideMenuState {
 
 enum LoginUserType {
     case staff
+    case trainer
     case customer
     case developer
     case adm

@@ -123,21 +123,15 @@ struct MainView: View {
                             }
                         
                         SideMenuView()
+                            .environmentObject(firestoreData)
+                            .environmentObject(viewRouter)
                             .frame(width: geometry.size.width*2/3)
                             .transition(.move(edge:.leading))
                             .opacity(1)
+                            
                     }
                 }
             }
-        }
-    }
-    
-    private func isStaff() -> Bool {
-        if viewRouter.loginUserType == .staff {
-            return true
-        }
-        else{
-            return false
         }
     }
 }

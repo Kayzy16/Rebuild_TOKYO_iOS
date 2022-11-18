@@ -28,11 +28,13 @@ struct StaffListView: View {
                             else{
                                 NavigationLink(
                                     destination:EditStaffView(staff: stff)
+                                        .environmentObject(firestoreData)
                                         .onDisappear{
                                             self.staffList = firestoreData.staff.entities
                                         }
                                 ){
                                     ListRowStaff(staff:stff).contentShape(Rectangle())
+                                        .environmentObject(firestoreData)
                                 }
                             }
                         }
@@ -52,6 +54,7 @@ struct StaffListView: View {
         }
         .onAppear{
             self.staffList = firestoreData.staff.entities
+            print(firestoreData)
         }
         
     }

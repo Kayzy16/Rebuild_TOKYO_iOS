@@ -14,6 +14,7 @@ class Staff : Object,Identifiable {
     @objc dynamic var name          : String = ""
     @objc dynamic var mail          : String = ""
     @objc dynamic var password      : String = ""
+    @objc dynamic var authLevel     : Int = -1
     
     @objc dynamic var updateDate     : Date = NSDate() as Date
     @objc dynamic var createDate     : Date = NSDate() as Date

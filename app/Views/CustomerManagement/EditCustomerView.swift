@@ -26,6 +26,7 @@ struct EditCustomerView: View {
     // 一覧画面に戻るための変数
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var firestoreData : FirestoreDataRepository
+    @EnvironmentObject var viewRouter: ViewRouter
     
     @State private var name = ""
     @State private var mail = ""
@@ -138,12 +139,13 @@ struct EditCustomerView: View {
                     },
                     label: {
                         Text("顧客を削除")
-                            .foregroundColor(.red)
+                            .foregroundColor(isDeletableAuthLevel() ? .red : .gray)
                     }
                 )
                 .alert(isPresented: $deleteAlert){
                     showDeleteAlert()
                 }
+                .disabled(!isDeletableAuthLevel())
             }
         }
         
@@ -189,6 +191,15 @@ struct EditCustomerView: View {
                     showUpdateAlert()
                 }
         )
+    }
+    
+    private func isDeletableAuthLevel() -> Bool {
+        if(viewRouter.loginUserType == .adm){
+            return true
+        }
+        else{
+            return false
+        }
     }
     
     private func sendPassSettingMail(withEmail:String){

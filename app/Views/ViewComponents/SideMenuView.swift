@@ -12,6 +12,7 @@ struct SideMenuView: View {
     @Environment(\.openURL) var openURL
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var viewRouter: ViewRouter
+    @EnvironmentObject var firestoreData : FirestoreDataRepository
     @State private var showSheet : Bool = false
     
     @State private var sheetType : SheetType = .staffManagement
@@ -59,7 +60,7 @@ struct SideMenuView: View {
             
             
             // staff management
-            if viewRouter.loginUserType == .staff{
+            if viewRouter.loginUserType != .customer{
                 HStack {
 //                    Image(systemName: "gearshape.fill")
 //                        .imageScale(.large)
@@ -78,7 +79,7 @@ struct SideMenuView: View {
                 }
             }
             
-            if viewRouter.loginUserType == .staff{
+            if viewRouter.loginUserType != .customer{
                 HStack {
 //                    Image(systemName: "gearshape.fill")
 //                        .imageScale(.large)
@@ -131,7 +132,7 @@ struct SideMenuView: View {
         .edgesIgnoringSafeArea(.all)
         .sheet(isPresented: $showSheet, content: {
             switch sheetType{
-                case .staffManagement:StaffListView()
+                case .staffManagement:StaffListView().environmentObject(firestoreData)
                 case .customerManagement:CustomerListView()
             }
             

@@ -90,11 +90,11 @@ struct EventRectView: View {
         .background(getSpotColorByState())
         .shadow(color: .gray, radius: 3, x: 2, y: 2)
         .onTapGesture {
-            print("date : \(date)")
-            print("startTime : \(startTime)")
-            self.shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
-            if getSpotState() == .initial || getSpotState() == .enabled || getSpotState() == .occupied{
-                reservationAlert.toggle()
+            if(viewRouter.loginUserType == .trainer){
+                self.shift = firestoreData.staffShift.getData(date: date, startTime: startTime, seq: seq)
+                if getSpotState() == .initial || getSpotState() == .enabled || getSpotState() == .occupied{
+                    reservationAlert.toggle()
+                }
             }
         }
         .alert(isPresented:$reservationAlert){
@@ -315,8 +315,9 @@ struct EventRectView: View {
         settings.isPersistenceEnabled = false
         db.settings = settings
 
+        let day = getNormalizedDate(from: self.startTime)
         db.collection("40_STAFF_SHIFT")
-            .whereField("40_START_TIME",isGreaterThanOrEqualTo: Timestamp(date: getJSTDate(fromUTC: self.startTime)))
+            .whereField("20_START_DATE",isEqualTo:Timestamp(date: day))
             .getDocuments{(querySnapshot, err) in
                 if let err = err {
 //                    print("Error getting documents: \(err)")

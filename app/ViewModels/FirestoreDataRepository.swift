@@ -15,6 +15,7 @@ class FirestoreDataRepository: ObservableObject {
     @Published var ticket = CustomerTicketViewModel() // must be fetched after login completion
     @Published var customer = CustomerViewModel()
     @Published var programs = ProgramsViewModel()
+    @Published var authLevel = AuthLevelViewModel()
     
     init(){
         fetchData()
@@ -26,5 +27,6 @@ class FirestoreDataRepository: ObservableObject {
         reservation.fetchData()
         customer.fetchData()
         programs.fetchData()
+        authLevel.fetchData()
     }
 }

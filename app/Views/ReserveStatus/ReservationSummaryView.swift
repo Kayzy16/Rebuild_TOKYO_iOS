@@ -55,7 +55,8 @@ struct ReservationSummaryView: View {
                     return a.startTime < b.startTime})
             
             if(bookingList.count > 0){
-                booking.append(bookingList.first!)
+//                booking.append(bookingList.first!)
+                booking = bookingList
             }
             else{
                 booking.removeAll()

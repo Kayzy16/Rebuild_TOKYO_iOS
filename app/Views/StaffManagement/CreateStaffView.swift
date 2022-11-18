@@ -31,6 +31,7 @@ struct CreateStaffView: View {
     @State private var name = ""
     @State private var mail  = ""
     @State private var password = ""
+    @State private var authLevel : AuthLevel?
     
     let db = Firestore.firestore()
     
@@ -83,6 +84,16 @@ struct CreateStaffView: View {
                         .frame(width:CGFloat(160))
                         .disabled(isFinishing)
                         .font(.body)
+                }
+                
+                HStack {
+                    NavigationLink(destination: AuthPickerView(selectedAuthLevel: $authLevel)){
+                        HStack{
+                            Text("権限ロール")
+                            Spacer()
+                            Text(authLevel?.name ?? "")
+                        }
+                    }
                 }
             }
             
@@ -155,6 +166,8 @@ struct CreateStaffView: View {
         settings.isPersistenceEnabled = false
         db.settings = settings
         
+        Auth.auth().cre
+        
         Auth.auth().createUser(withEmail: with.mail, password: with.password) { authResult, error in
             
             if nil != error {
@@ -187,6 +200,7 @@ struct CreateStaffView: View {
                 
                 let TAG_STAFF_NAME = "10_NAME"
                 let TAG_EMAIL = "20_EMAIL"
+                let TAG_AUTH_LEVEL = "30_AUTH_LEVEL"
                 let TAG_CREATE_DATE = "70_CREATE_DATE"
                 let TAG_UPDATE_DATE = "80_UPDATE_DATE"
                 let TAG_DELETE_FLG = "99_DELETE_FLG"
@@ -197,6 +211,7 @@ struct CreateStaffView: View {
                 db.collection(TAG_COLLECTION).document(staffId).setData([
                     TAG_STAFF_NAME: with.name,
                     TAG_EMAIL : with.mail,
+                    TAG_AUTH_LEVEL : with.authLevel,
                     TAG_CREATE_DATE: now,
                     TAG_UPDATE_DATE: now,
                     TAG_DELETE_FLG:0
@@ -231,14 +246,15 @@ struct CreateStaffView: View {
     
     private func getDataFromView() -> Staff {
         let stff = Staff()
-        stff.name     = self.name
-        stff.mail     = self.mail
-        stff.password = self.password
+        stff.name      = self.name
+        stff.mail      = self.mail
+        stff.password  = self.password
+        stff.authLevel = self.authLevel?.authLevel ?? 20
         return stff
     }
     
     private func isFormValid() -> Bool {
-        if(!name.isEmpty && !mail.isEmpty && !password.isEmpty){
+        if(!name.isEmpty && !mail.isEmpty && !password.isEmpty && nil != authLevel){
             return true
         }
         else{

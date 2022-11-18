@@ -25,10 +25,14 @@ struct EditStaffView: View {
     // 一覧画面に戻るための変数
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var firestoreData : FirestoreDataRepository
+    @EnvironmentObject var viewRouter: ViewRouter
+
     var gcp = GradientCircularProgress()
     @State private var name = ""
     @State private var mail = ""
     @State private var password = ""
+//    @State private var authLevel = 20
+    @State private var selectedAuthLevel : AuthLevel?
     
     
     enum AlertType {
@@ -46,6 +50,7 @@ struct EditStaffView: View {
         self._name = State(initialValue: staff.name)
         self._mail  = State(initialValue: staff.mail)
         self._password = State(initialValue: staff.password)
+//        self._authLevel = State(initialValue: staff.authLevel)
         
         let settings = FirestoreSettings()
         settings.isPersistenceEnabled = false
@@ -75,13 +80,16 @@ struct EditStaffView: View {
                     .disabled(true)
                     .font(.body)
                     .keyboardType(.emailAddress)
-//                        .onReceive(Just(fee)){ newValue in
-//                            let filtered = newValue.filter {"0123456789".contains($0)}
-//
-//                            if filtered != newValue{
-//                                self.fee = filtered
-//                            }
-//                        }
+            }
+            HStack {
+                NavigationLink(destination: AuthPickerView(selectedAuthLevel: $selectedAuthLevel)){
+                    HStack{
+                        Text("権限ロール")
+                        Spacer()
+                        Text(selectedAuthLevel?.name ?? "")
+                    }
+                }
+                .disabled(!isEditing)
             }
             
             Section{
@@ -100,16 +108,12 @@ struct EditStaffView: View {
                     showMailInitAlert()
                 }
             }
-//            HStack {
-//                Text("パスワード")
-//                    .font(.body)
-//                Spacer()
-//                TextField("",text:$password)
-//                    .textFieldStyle(RoundedBorderTextFieldStyle())
-//                    .frame(width:CGFloat(160))
-//                    .disabled(true)
-//                    .font(.body)
-//            }
+        }
+        .onAppear(){
+            print(self.staff.authLevel)
+            if nil == self.selectedAuthLevel{
+                self.selectedAuthLevel = firestoreData.authLevel.getAuthLevel(withLevel: staff.authLevel)
+            }
         }
         
         .navigationBarTitleDisplayMode(.inline)
@@ -149,7 +153,7 @@ struct EditStaffView: View {
                         }
                     }
                 )
-                .disabled(name.isEmpty)
+                .disabled(name.isEmpty || nil == selectedAuthLevel)
                 .alert(isPresented: $updateAlert){
                     showAlert()
                 }
@@ -253,6 +257,7 @@ struct EditStaffView: View {
         
         let TAG_STAFF_NAME = "10_NAME"
         let TAG_EMAIL = "20_EMAIL"
+        let TAG_AUTH_LEVEL = "30_AUTH_LEVEL"
         let TAG_CREATE_DATE = "70_CREATE_DATE"
         let TAG_UPDATE_DATE = "80_UPDATE_DATE"
         let TAG_DELETE_FLG = "99_DELETE_FLG"
@@ -263,6 +268,7 @@ struct EditStaffView: View {
         db.collection(TAG_COLLECTION).document(with.id).setData([
             TAG_STAFF_NAME: with.name,
             TAG_EMAIL : with.mail,
+            TAG_AUTH_LEVEL : with.authLevel,
             TAG_CREATE_DATE: with.createDate,
             TAG_UPDATE_DATE: now,
             TAG_DELETE_FLG:0
@@ -281,6 +287,7 @@ struct EditStaffView: View {
 //                    print(firestoreData.staff.entities[i].id)
                     if firestoreData.staff.entities[i].id == with.id{
                         firestoreData.staff.entities[i].name = with.name
+                        firestoreData.staff.entities[i].authLevel = with.authLevel
                     }
                 }
                 
@@ -288,11 +295,12 @@ struct EditStaffView: View {
         }
     }
     
-    private func getDataFromView() -> Staff{
+    private func getDataFromView() -> Staff {
         let stff      = self.staff
         stff.name     = self.name
         stff.mail     = self.mail
         stff.password = self.password
+        stff.authLevel = self.selectedAuthLevel?.authLevel ?? 20
         return stff
     }
     
